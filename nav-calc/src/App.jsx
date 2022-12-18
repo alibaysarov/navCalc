@@ -31,6 +31,12 @@ function App() {
   const magnetCourse=Number(course);
   const windDir=Number(windDirection);
   const res=groundSpeed(airSpd,windSpd,magnetCourse,windDir)
+
+  const [selectOpened,setSelectOpened]=React.useState(false);
+  const selectHandler=()=>{
+    setSelectOpened(prev=>!prev)
+  }
+
  const styles={
   title:{
     textTransform:'uppercase',
@@ -47,9 +53,9 @@ function App() {
         <div className="groundSpeedInput">
         <span>Скорость самолёта</span>
           <input type="text" value={airspeedInput} onChange={airspeedInputHandler} />
-        <div className="select">
+        <div className="select" onClick={selectHandler}>
           <img src="/img/arrowDn.svg" alt="Стрелка" width={10} height={7} />
-          <div className="options">
+          <div className={`options ${selectOpened&& 'show'}`}>
 
           <div className="option">
             КМ/Ч
@@ -66,16 +72,18 @@ function App() {
         </div>
         </div>
 
-        <div className="groundSpeedInput">
+        <div className="groundSpeedInputSimple">
         <span>Скорость ветра</span>
         <input type="text" value={windSpeedInput}  onChange={windSpeedInputHandler} />
         </div>
 
-        <div className="groundSpeedInput">
-        <input type="text" value={course} placeholder="Путевой угол" onChange={courseInputHandler}  />
+        <div className="groundSpeedInputSimple">
+        <span>Путевой угол</span>
+        <input type="text" value={course}  onChange={courseInputHandler}  />
         </div>
-        <div className="groundSpeedInput">
-        <input type="text" value={windDirection} placeholder="Направление ветра" onChange={windDirectionHandler} />
+        <div className="groundSpeedInputSimple">
+          <span>Направление ветра</span>
+        <input type="text" value={windDirection} onChange={windDirectionHandler} />
         </div>
       </div>
 

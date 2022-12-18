@@ -69,6 +69,7 @@ body{
             position: relative;
             width: 100%;
             max-width: 72px;
+            cursor: pointer;
             img{
                 position: absolute;
                 right: 15px;
@@ -77,9 +78,13 @@ body{
             }
             .options{
                 position: absolute;
+                z-index: 200;
                 height: 100%;
                 width: 100%;
                 overflow-y: hidden;
+                &.show{
+                    overflow-y: visible;
+                }
                 .option{
                     // height: 75%;
                     // transform: translateY(16%);
@@ -94,18 +99,56 @@ body{
                     line-height: 14px;
                     /* or 100% */
                     padding: 0 5px;
-
                     color: #000000;
-                    &:nth-child(2){
-                        border:1px solid #1A7FDC;
-
-                    }
-                    &:not(&:nth-child(1)){
+                    z-index: 120;
+                    &:not(:nth-of-type(1)){
                         background-color: #fff;
+                        border:1px solid #1A7FDC;
+                        border-bottom:1px;
+                        // margin: 0px -1px;
+                    }
+                    &:last-child{
+                        border-bottom:1px solid #1A7FDC;
+                        border-bottom-right-radius:10px;
+                        border-bottom-left-radius:5px;
                     }
                 }
                 
             }
+        }
+    }
+    &InputSimple{
+        display: flex;
+        align-items: stretch;
+        
+        position: relative;
+        width: 100%;
+        border:1px solid #1A7FDC;
+        border-radius:10px;
+        margin-bottom: 20px;
+        span{
+            position: absolute;
+            top: -5px;
+            left: 15px;
+            display: block;
+            padding: 2px 5px;
+            font-family: 'Montserrat';
+            font-style: normal;
+            font-weight: 500;
+            font-size: 7px;
+            line-height: 6px;
+            /* or 86% */
+            text-align: center;
+            background-color: #fff;
+            color: #000000;
+        }
+        input{
+            border: none;
+            outline: none;
+            background-color: transparent;
+            padding-left: 10px;
+            width: 100%;
+            min-height: 52px;
         }
     }
 }
