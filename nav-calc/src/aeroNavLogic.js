@@ -1,6 +1,6 @@
 import Number from "./mathLogic";
 
-//Угол сноса
+//Путевая скорость
 
 export const groundSpeed=(airSpd,windSpd,magnHdg,windDir)=>{
     const findMeDriftAngle=(airSpd,windSpd,magnHdg,windDir)=>{

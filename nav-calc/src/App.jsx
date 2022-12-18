@@ -31,14 +31,55 @@ function App() {
   const magnetCourse=Number(course);
   const windDir=Number(windDirection);
   const res=groundSpeed(airSpd,windSpd,magnetCourse,windDir)
- console.log(res)
+ const styles={
+  title:{
+    textTransform:'uppercase',
+    textAlign:'center'
+  }
+ }
   return (
    <div>
-    <input type="text" value={airspeedInput} placeholder="Воздушная скорость" onChange={airspeedInputHandler} />
-    <input type="text" value={windSpeedInput} placeholder="Скорость ветра" onChange={windSpeedInputHandler} />
-    <input type="text" value={course} placeholder="Путевой угол" onChange={courseInputHandler}  />
-    <input type="text" value={windDirection} placeholder="Направление ветра" onChange={windDirectionHandler} />
-    <h3>{`Путевая скорость равна ${res}`}</h3>
+    
+    <div className="container">
+    <h3 style={styles.title}>Путевая скорость</h3>
+      <div className="groundSpeedInputs">
+
+        <div className="groundSpeedInput">
+        <span>Скорость самолёта</span>
+          <input type="text" value={airspeedInput} onChange={airspeedInputHandler} />
+        <div className="select">
+          <img src="/img/arrowDn.svg" alt="Стрелка" width={10} height={7} />
+          <div className="options">
+
+          <div className="option">
+            КМ/Ч
+          </div>
+          <div className="option">
+            MPH
+          </div>
+          <div className="option">
+            KTS
+          </div>
+
+          </div>
+          
+        </div>
+        </div>
+
+        <div className="groundSpeedInput">
+        <span>Скорость ветра</span>
+        <input type="text" value={windSpeedInput}  onChange={windSpeedInputHandler} />
+        </div>
+
+        <div className="groundSpeedInput">
+        <input type="text" value={course} placeholder="Путевой угол" onChange={courseInputHandler}  />
+        </div>
+        <div className="groundSpeedInput">
+        <input type="text" value={windDirection} placeholder="Направление ветра" onChange={windDirectionHandler} />
+        </div>
+      </div>
+
+    </div>
    </div>
   );
 }
