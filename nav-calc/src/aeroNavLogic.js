@@ -3,6 +3,7 @@ import Number from "./mathLogic";
 //Путевая скорость
 
 export const groundSpeed=(airSpd,windSpd,magnHdg,windDir)=>{
+    
     const findMeDriftAngle=(airSpd,windSpd,magnHdg,windDir)=>{
         const navWind=windDir>180?windDir-180:windDir+180;
         const courseWindAngle=navWind-magnHdg;
