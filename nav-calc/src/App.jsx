@@ -5,6 +5,7 @@ import Input from './components/Input';
 import SelectInput from "./components/SelectInput";
 import Content from "./components/Content";
 import Container from './components/Container';
+import Result from "./components/Result";
 
 function App() {
   const [airspeedInput,setAirSpeedInput]=React.useState({value:'',measure:'kmh'});
@@ -19,7 +20,7 @@ function App() {
   const windDir=Number(windDirection.trim());
 
   const res=groundSpeed(airSpd,windSpd,magnetCourse,windDir)
-
+  console.log(res)
   
   
  
@@ -78,9 +79,7 @@ function App() {
             <Input label="Путевой угол" maxLength={3} value={course} setValue={setCourse}/>
             <Input label="Направление ветра" maxLength={3} value={windDirection} setValue={setWindDirection}/>
         </Content>
-          <h2>{res.driftAngle}</h2>
-          <h2>{res.groundSpeed}</h2>
-          <h2>{res.heading}</h2>
+        <Result {...res} />
     </Container>
    </>
   );

@@ -43,7 +43,7 @@ export const groundSpeed=(airSpd,windSpd,magnHdg,windDir)=>{
     console.log(res)
     const {driftAngle,driftAngleCos,courseWindAgleCos}=res;
     const navData={
-        groundSpeed:(airSpd*driftAngleCos+windSpd*courseWindAgleCos).toFixed(1),
+        groundSpeed:Math.round(airSpd*driftAngleCos+windSpd*courseWindAgleCos),
         driftAngle,
         heading:parseInt(magnHdg-driftAngle)
     }
