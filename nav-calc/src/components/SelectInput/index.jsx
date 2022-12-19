@@ -1,16 +1,16 @@
 import React from 'react';
 import cl from './index.module.scss';
-const SelectInput = ({label,value,setValue,options}) => {
+const SelectInput = ({label,value,setValue,options,maxLength}) => {
   const inputHandler=(e)=>{
     e.target.value=e.target.value.replace(/(^0{1,1}|[A-Za-zА-Яа-я])/g,'');
-    setValue({value:e.target.value.trim(),measure:1})
+    setValue({...value,value:e.target.value.trim()})
     }
 
     const [selectOpened,setSelectOpened]=React.useState(false);
     const selectHandler=(unit)=>{
       setSelectOpened(prev=>!prev)
     }
-    const [defUnit,setDefUnit]=React.useState('КМ/Ч')
+    const [defUnit,setDefUnit]=React.useState(options[0].text)
     const measureUnitSelect=(unit)=>{
       if(selectOpened){
         setValue({...value,measure:unit.val})
@@ -18,14 +18,12 @@ const SelectInput = ({label,value,setValue,options}) => {
       }
       return
     }
-    React.useEffect(()=>{
-      console.log(value)
-    },[value])
+    console.log(value)
 
     return (
         <div className={cl.Input}>
-        <span>Скорость самолёта</span>
-          <input type="text" value={value.value} onChange={inputHandler} />
+        <span>{label}</span>
+          <input type="text" value={value.value} onChange={inputHandler} maxLength={maxLength}/>
         <div className={cl.select} onClick={selectHandler}>
           <img src="/img/arrowDn.svg" alt="Стрелка" width={10} height={7} />
           <div className={selectOpened?cl.options+' '+cl.show:cl.options}>

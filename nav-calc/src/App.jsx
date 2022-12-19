@@ -7,8 +7,8 @@ import Content from "./components/Content";
 import Container from './components/Container';
 
 function App() {
-  const [airspeedInput,setAirSpeedInput]=React.useState({value:'',measure:1});
-  const [windSpeedInput,setWindSpeedInput]=React.useState({value:'',measure:1});
+  const [airspeedInput,setAirSpeedInput]=React.useState({value:'',measure:'kmh'});
+  const [windSpeedInput,setWindSpeedInput]=React.useState({value:'',measure:'ms'});
   const [course,setCourse]=React.useState('');
   const [windDirection,setWindDirection]=React.useState('');
   
@@ -45,12 +45,12 @@ function App() {
  ]
  const windOptions=[
   {
-    text:'КМ/Ч',
-    val:'kmh'
-  },
-  {
     text:'М/С',
     val:'ms'
+  },
+  {
+    text:'КМ/Ч',
+    val:'kmh'
   },
   {
     text:'KN',
@@ -67,6 +67,7 @@ function App() {
               value={airspeedInput}
               setValue={setAirSpeedInput}
               options={options}
+              
             />
             <SelectInput
               label="Скорость ветра"
@@ -74,10 +75,12 @@ function App() {
               setValue={setWindSpeedInput}
               options={windOptions}
             />
-            <Input label="Путевой угол" value={course} setValue={setCourse}/>
-            <Input label="Направление ветра" value={windDirection} setValue={setWindDirection}/>
+            <Input label="Путевой угол" maxLength={3} value={course} setValue={setCourse}/>
+            <Input label="Направление ветра" maxLength={3} value={windDirection} setValue={setWindDirection}/>
         </Content>
-          <h2>{res}</h2>
+          <h2>{res.driftAngle}</h2>
+          <h2>{res.groundSpeed}</h2>
+          <h2>{res.heading}</h2>
     </Container>
    </>
   );
