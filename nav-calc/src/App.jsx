@@ -16,16 +16,17 @@ import {
   Routes,
 } from "react-router-dom";
 import GroundSpeed from './pages/GroundSpeed';
+import Home from './pages/Home';
 function App() {
  
   return (
    <>
    <Routes>
-    
+    <Route path='/' exact element={<Home/>}/>
     <Route path='/groundspeed' exact element={<GroundSpeed/>}/>
+    
    </Routes>
    
-    
     <FooterNav/>
    </>
   );
