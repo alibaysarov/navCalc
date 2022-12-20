@@ -45,7 +45,7 @@ export const groundSpeed=(airSpd,windSpd,magnHdg,windDir)=>{
     const navData={
         groundSpeed:Math.round(airSpd*driftAngleCos+windSpd*courseWindAgleCos),
         driftAngle,
-        heading:parseInt(magnHdg-driftAngle)<0?360-parseInt(magnHdg-driftAngle):parseInt(magnHdg-driftAngle)
+        heading:parseInt(magnHdg-driftAngle)<0?360+parseInt(magnHdg-driftAngle):parseInt(magnHdg-driftAngle)
     }
     return isNaN(navData.groundSpeed)
     ?'---'

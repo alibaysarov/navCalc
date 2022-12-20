@@ -1,0 +1,47 @@
+.header{
+    display: flex;
+    align-items: center;
+    width: 100%;
+    min-height: 66px;
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    background-color: rgba(35, 161, 232, 1);
+    filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+    padding: 13px 23px 13px 13px;
+    z-index: 300;
+}
+.content{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+img{
+    cursor: pointer;
+    transition: opacity 0.3s ease-in-out;
+    &:hover{
+        opacity: 0.7;
+    }
+    &:active{
+        opacity: 0.7;
+    }
+}
+.title{
+    font-family: 'Montserrat',sans-serif;
+    font-style: normal;
+    font-weight: 700;
+    font-size: 18px;
+    line-height: 18px;
+    /* or 100% */
+
+    text-align: center;
+
+    color: #FFFFFF;
+
+}
+.titleWrap{
+    max-width: 198px;
+    margin: 0 auto;
+}

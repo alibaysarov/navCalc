@@ -6,6 +6,7 @@ import SelectInput from "./components/SelectInput";
 import Content from "./components/Content";
 import Container from './components/Container';
 import Result from "./components/Result";
+import HeaderBlue from "./components/HeaderBlue/index.jsx";
 
 function App() {
   const [airspeedInput,setAirSpeedInput]=React.useState({value:'',measure:'kmh'});
@@ -58,10 +59,16 @@ function App() {
     val:'kts'
   },
  ]
+ const pagestyles={
+  topContainer:{
+    marginTop:100+'px'
+  }
+ }
   return (
    <>
-    <Container>
-      <h3 style={styles.title}>Путевая скорость</h3>
+   <HeaderBlue title={'Калькулятор путевой скорости'}/>
+    <Container styles={pagestyles.topContainer}>
+      
         <Content>
             <SelectInput
               label='Воздушная скорость'

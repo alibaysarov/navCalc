@@ -1,8 +1,8 @@
 import React from 'react';
 import cl from './index.module.scss';
-const Container = ({children}) => {
+const Container = ({children,styles}) => {
     return (
-        <div className={cl.container}>
+        <div style={styles} className={cl.container}>
             {children}
         </div>
     );
