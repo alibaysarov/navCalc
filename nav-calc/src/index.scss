@@ -12,7 +12,9 @@ body{
     max-width: 300px;
     margin: 0 auto;
 }
-
+a{
+    text-decoration: none;
+}
 .groundSpeed{
     &Inputs{
         display: flex;
