@@ -7,6 +7,7 @@ import Content from "./components/Content";
 import Container from './components/Container';
 import Result from "./components/Result";
 import HeaderBlue from "./components/HeaderBlue/index.jsx";
+import FooterNav from "./components/FooterNav/index.jsx";
 
 function App() {
   const [airspeedInput,setAirSpeedInput]=React.useState({value:'',measure:'kmh'});
@@ -61,7 +62,8 @@ function App() {
  ]
  const pagestyles={
   topContainer:{
-    marginTop:100+'px'
+    marginTop:100+'px',
+    marginBottom:100+'px'
   }
  }
   return (
@@ -88,6 +90,7 @@ function App() {
         </Content>
         <Result {...res} />
     </Container>
+    <FooterNav/>
    </>
   );
 }
