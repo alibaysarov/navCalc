@@ -17,6 +17,7 @@ import {
 } from "react-router-dom";
 import GroundSpeed from './pages/GroundSpeed';
 import Home from './pages/Home';
+import DevelopPage from './pages/DevelopPage';
 function App() {
  
   return (
@@ -24,6 +25,11 @@ function App() {
    <Routes>
     <Route path='/' exact element={<Home/>}/>
     <Route path='/groundspeed' exact element={<GroundSpeed/>}/>
+    <Route path='/createFlightPlan' exact element={<DevelopPage/>}/>
+    <Route path='/my-routes' exact element={<DevelopPage/>}/>
+    <Route path='/messages' exact element={<DevelopPage/>}/>
+    <Route path='/settings' exact element={<DevelopPage/>}/>
+    <Route path='/profile' exact element={<DevelopPage/>}/>
     
    </Routes>
    
