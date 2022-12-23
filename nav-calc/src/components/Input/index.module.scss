@@ -31,4 +31,11 @@
         width: 100%;
         min-height: 52px;
     }
+    .closeImg{
+        max-width: 100%;
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translate(0px,-50%);
+    }
 }

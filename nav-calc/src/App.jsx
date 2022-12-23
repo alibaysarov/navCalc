@@ -25,6 +25,7 @@ function App() {
    <Routes>
     <Route path='/' exact element={<Home/>}/>
     <Route path='/groundspeed' exact element={<GroundSpeed/>}/>
+    
     <Route path='/createFlightPlan' exact element={<DevelopPage/>}/>
     <Route path='/my-routes' exact element={<DevelopPage/>}/>
     <Route path='/messages' exact element={<DevelopPage/>}/>

@@ -8,10 +8,15 @@ const Input = ({label,value,setValue,maxLength}) => {
             setValue(e.target.value.substring(0,e.target.value.length-1))
         }
     }
+    const deleteHandler=(e)=>{
+        e.target.value=''
+        setValue(e.target.value);
+    }
     return (
         <div className={cl.InputSimple}>
         <span>{label}</span>
         <input type="text" value={value}  onChange={inputHandler} maxLength={maxLength}/>
+        <img onClick={deleteHandler} src="/img/closeIcon.svg" width={15} height={15} className={cl.closeImg} alt="Закрыть" />
         </div>
     );
 };

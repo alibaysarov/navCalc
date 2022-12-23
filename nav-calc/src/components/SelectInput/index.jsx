@@ -10,6 +10,9 @@ const SelectInput = ({label,value,setValue,options,maxLength}) => {
     const selectHandler=(unit)=>{
       setSelectOpened(prev=>!prev)
     }
+    const deleteHandler=(e)=>{
+      setValue({...value,value:''})
+    }
     const [defUnit,setDefUnit]=React.useState(options[0].text)
     const measureUnitSelect=(unit)=>{
       if(selectOpened){
@@ -24,6 +27,9 @@ const SelectInput = ({label,value,setValue,options,maxLength}) => {
         <div className={cl.Input}>
         <span>{label}</span>
           <input type="text" value={value.value} onChange={inputHandler} maxLength={maxLength}/>
+
+          <img onClick={deleteHandler} className={cl.closeImg} src='/img/closeIcon.svg' width={15} height={15} alt="Закрыть" />
+
         <div className={cl.select} onClick={selectHandler}>
           <img src="/img/arrowDn.svg" alt="Стрелка" width={10} height={7} />
           <div className={selectOpened?cl.options+' '+cl.show:cl.options}>

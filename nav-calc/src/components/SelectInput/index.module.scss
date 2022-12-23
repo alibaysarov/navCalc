@@ -33,12 +33,19 @@
         border-top-right-radius: 0px;
         border-bottom-right-radius: 0px;
         border-right: 0px;
-    
+        // position: relative;
 
     }
     margin-bottom: 20px;
     &:last-of-type{
         margin-bottom: 0px;
+    }
+    .closeImg{
+        max-width: 100%;
+        position: absolute;
+        right: 80px;
+        top: 50%;
+        transform: translate(0px,-50%);
     }
     .select{
         border:1px solid #1A7FDC;
@@ -58,11 +65,13 @@
         .options{
             position: absolute;
             z-index: 200;
+            
             height: 100%;
             width: 100%;
             overflow-y: hidden;
             &.show{
                 overflow-y: visible;
+                z-index: 2000;
             }
             .option{
                 // height: 75%;
