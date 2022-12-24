@@ -18,6 +18,7 @@ import {
 import GroundSpeed from './pages/GroundSpeed';
 import Home from './pages/Home';
 import DevelopPage from './pages/DevelopPage';
+import NewFlightPlanPage from './pages/NewFlightPlanPage';
 function App() {
  
   return (
@@ -26,7 +27,7 @@ function App() {
     <Route path='/' exact element={<Home/>}/>
     <Route path='/groundspeed' exact element={<GroundSpeed/>}/>
     
-    <Route path='/createFlightPlan' exact element={<DevelopPage/>}/>
+    <Route path='/createFlightPlan' exact element={<NewFlightPlanPage/>}/>
     <Route path='/my-routes' exact element={<DevelopPage/>}/>
     <Route path='/messages' exact element={<DevelopPage/>}/>
     <Route path='/settings' exact element={<DevelopPage/>}/>

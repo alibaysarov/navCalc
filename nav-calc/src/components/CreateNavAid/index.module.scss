@@ -1,0 +1,80 @@
+.createContent{
+  margin-top: 10px;
+}
+.textInput{
+  outline: none;
+  box-sizing: border-box;
+  border: 1px solid #1A7FDC;
+  border-radius: 10px;
+  font-size: 14px;
+  padding: 8px 12px;
+}
+.coordinates{
+  margin: 14px 0px 0px;
+}
+.coordinatesField{
+  display: flex;
+    align-items: stretch;
+    
+    position: relative;
+    width: 100%;
+    border:1px solid #1A7FDC;
+    border-radius:10px;
+    margin-bottom: 20px;
+    span{
+        position: absolute;
+        top: -5px;
+        left: 15px;
+        display: block;
+        padding: 2px 5px;
+        font-family: 'Montserrat';
+        font-style: normal;
+        font-weight: 500;
+        font-size: 7px;
+        line-height: 6px;
+        /* or 86% */
+        text-align: center;
+        background-color: #fff;
+        color: #000000;
+    }
+    input{
+        border: none;
+        outline: none;
+        background-color: transparent;
+        padding-left: 10px;
+        width: 100%;
+        min-height: 52px;
+    }
+    .closeImg{
+        max-width: 100%;
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translate(0px,-50%);
+    }
+}
+.buttons{
+  display: flex;
+  
+}
+.addButton{
+  cursor: pointer;
+  border:none;
+  outline: none;
+  background: linear-gradient(101.77deg, #3EA4DD 15.16%, rgba(35, 161, 232, 0.82) 59.48%);
+box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+border-radius: 45px;
+font-family: 'Montserrat';
+font-style: normal;
+font-weight: 400;
+font-size: 12px;
+line-height: 15px;
+text-align: center;
+
+color: #FFFFFF;
+padding: 7px 15px 9px;
+transition: transform 0.3s ease-in-out;
+&:active{
+  transform: scale(.95);
+}
+}
