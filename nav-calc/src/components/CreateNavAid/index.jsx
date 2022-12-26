@@ -5,6 +5,7 @@ import Title from '../Title';
 import cl from './index.module.scss'
 import { IMaskInput } from 'react-imask';
 import {SphericalUtil, PolyUtil} from "node-geometry-library";
+
 const CreateNavAid = () => {
   const [textInputVal,setTextInputVal]=React.useState('');
   const inputHandler=(e)=>{
@@ -17,7 +18,7 @@ const CreateNavAid = () => {
 const inputRef = React.useRef(null);
 
 const coordsDecimal=(str)=>{
-  let sign=str[0]=='N'||str[0]=='W'?+1:-1
+  let sign=str[0]=='N'||str[0]=='E'?+1:-1
   str=str.replace(/[A-Z]/g,'');
   
   let divided=str.split('°')
@@ -37,12 +38,70 @@ const lngInputHandler=(e)=>{
   setLngVal(e.target.value)
   console.log(lngVal)
 }
+class WayPoint{
+  constructor(lat,lng){
+    this.latitude=lat
+    this.longitude=lng
+  }
+}
+let wpArray=[]
 const createWaypointHandler=()=>{
   if(latVal==''){
     return
   }
-  console.log(coordsDecimal(latVal))
 }
+let obj1={
+  lat:52.522,
+  lng:55.855
+}
+let obj2={
+  lat:52.56,
+  lng:49.25
+}
+let obj3={
+  lat:62.56,
+  lng:59.25
+}
+let obj4={
+  lat:74.56,
+  lng:59.25
+}
+let obj5={
+  lat:84.56,
+  lng:65.25
+}
+let distArr=[obj1,obj2,obj3,obj4]
+function countDistance(arr){
+  if(arr.length<2){
+    return 0
+  }
+  let legs=[]
+  for (let i = 0; i < arr.length; i++) {
+    const fromElem = arr[i];
+    const toElem=arr[i+1]?arr[i+1]:fromElem
+    legs.push(SphericalUtil.computeDistanceBetween(fromElem,toElem)/1000/1.852)
+  }
+  
+  // return Math.round(legs.slice(0,-1).reduce((a,b)=>a+b));
+  return legs.slice(0,-1)
+}
+let ranges=countDistance(distArr)
+
+let modernWpts=distArr.map((item,index)=>{
+if(index>0){
+  let distToWpt=ranges[index-1]?ranges[index-1]:0
+return{
+  ...item,
+  distanceToWpt:distToWpt
+}
+}else{
+  return{
+    ...item,
+    distanceToWpt:'---'
+  }
+}
+})
+console.log(modernWpts)
 
 
   return (
@@ -81,6 +140,7 @@ const createWaypointHandler=()=>{
           /> 
             <img src="/img/closeIcon2.svg" className={cl.closeImg} width={20} height={20} alt="" />
         </div>
+        
         </Content>
         
       </div>
