@@ -2,6 +2,7 @@ import React from 'react';
 import Container from '../Container';
 import Content from '../Content';
 import Title from '../Title';
+import MapWrapper from '../Map';
 import cl from './index.module.scss'
 import { IMaskInput } from 'react-imask';
 import {SphericalUtil, PolyUtil} from "node-geometry-library";
@@ -40,37 +41,43 @@ const lngInputHandler=(e)=>{
 }
 class WayPoint{
   constructor(lat,lng){
-    this.latitude=lat
-    this.longitude=lng
+    this.lat=lat
+    this.lng=lng
   }
 }
-let wpArray=[]
+
+const [wpArray,setWpArray]=React.useState([])
 const createWaypointHandler=()=>{
-  if(latVal==''){
+  if(latVal=='' || lngVal==''){
     return
+  }else{
+    setWpArray(prev=>[...prev,new WayPoint(coordsDecimal(latVal),coordsDecimal(lngVal))])
+
+    if(wpArray.length>1){
+      function addDistanceToWpt(item,index){
+        if(index>0){
+          let distToWpt=countDistance(wpArray)[index+1]?countDistance(wpArray)[index+1]:0
+        return{
+          ...item,
+          distanceToWpt:distToWpt
+        }
+        }else{
+          return{
+            ...item,
+            distanceToWpt:'---'
+          }
+        }
+      }
+      setWpArray(prev=>prev.map(addDistanceToWpt))
+      console.log(wpArray)
+      // wpArray.map(addDistanceToWpt)
+    }
+  
   }
+  
 }
-let obj1={
-  lat:52.522,
-  lng:55.855
-}
-let obj2={
-  lat:52.56,
-  lng:49.25
-}
-let obj3={
-  lat:62.56,
-  lng:59.25
-}
-let obj4={
-  lat:74.56,
-  lng:59.25
-}
-let obj5={
-  lat:84.56,
-  lng:65.25
-}
-let distArr=[obj1,obj2,obj3,obj4]
+
+
 function countDistance(arr){
   if(arr.length<2){
     return 0
@@ -81,27 +88,9 @@ function countDistance(arr){
     const toElem=arr[i+1]?arr[i+1]:fromElem
     legs.push(SphericalUtil.computeDistanceBetween(fromElem,toElem)/1000/1.852)
   }
-  
-  // return Math.round(legs.slice(0,-1).reduce((a,b)=>a+b));
+
   return legs.slice(0,-1)
 }
-let ranges=countDistance(distArr)
-
-let modernWpts=distArr.map((item,index)=>{
-if(index>0){
-  let distToWpt=ranges[index-1]?ranges[index-1]:0
-return{
-  ...item,
-  distanceToWpt:distToWpt
-}
-}else{
-  return{
-    ...item,
-    distanceToWpt:'---'
-  }
-}
-})
-console.log(modernWpts)
 
 
   return (
@@ -148,7 +137,7 @@ console.log(modernWpts)
         <button onClick={createWaypointHandler} className={cl.addButton}>Добавить в план</button>
       </div>
       </div>
-      
+      <MapWrapper/>
     </Container>
   );
 };

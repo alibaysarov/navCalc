@@ -6,6 +6,7 @@ const NewFlightPlanPage = () => {
     <>
     <HeaderBlue title={'Создание плана полета'}/>
     <CreateNavAid/>
+    
     </>
   );
 };
