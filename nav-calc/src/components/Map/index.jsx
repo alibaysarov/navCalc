@@ -14,7 +14,7 @@ import Polygon from 'ol/geom/Polygon.js';
 import {Circle, Fill, Stroke, Style} from 'ol/style.js';
 import LineString from 'ol/geom/LineString.js';
 
-const MapWrapper = () => {
+const MapWrapper = ({isShown,hideHandler}) => {
   const options = {
     enableHighAccuracy: true,
     timeout: 5000,
@@ -44,6 +44,13 @@ const MapWrapper = () => {
   const [ featuresLayer, setFeaturesLayer ] = useState()
   const [ selectedCoord , setSelectedCoord ] = useState()
   const [coords,setCoords]=useState([])
+
+
+  const [hidemap,setHidemap]=useState(isShown)
+  const hidemapHandler=()=>{
+    setHidemap(prev=>!prev)
+  }
+
   const mapRef=useRef(null)
   const mapStateRef=useRef(null)
   mapStateRef.current=map
@@ -96,18 +103,38 @@ const MapWrapper = () => {
       //     }),
       //   ];
       // }
-      
+      const pointStyle=new Style({
+        image:new Circle({
+          radius:7,
+          fill:new Fill({
+            color:'red',
+          }),
+          stroke:new Stroke({
+            color:'black',
+            width:1
+          })
+        }),
+        fill:new Fill({
+          color:'#000'
+        }),
+        stroke:new Stroke({
+          color: 'magenta',
+          width: 4,
+        })
+      })
       let lines = new LineString(coords).transform('EPSG:4326', initialMap.getView().getProjection());
+     
       let secondLayer=new VectorLayer({
         source:new VectorSource({
           features: [
             new Feature({
               geometry: lines,
               name: "Line",
+              style:pointStyle
             }),
           ],
         }),
-        style:stroke
+        style:pointStyle
       })
       // secondLayer.setStroke(stroke)
       initialMap.addLayer(secondLayer)
@@ -160,9 +187,15 @@ const MapWrapper = () => {
   
   
   return (
+    <>
+    
     <div style={{height:400+'px',width:100+'%'}} className={cl.map} ref={mapRef}>
     <p>{selectedCoord}</p>
-    </div>
+    <button onClick={hideHandler} className={cl.hide}>&times;</button>
+    </div>  
+    
+    </>
+    
   );
 };
 

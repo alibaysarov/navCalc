@@ -14,6 +14,10 @@ const CreateNavAid = () => {
   }
   const[latVal,setLatVal]=React.useState('');
   const[lngVal,setLngVal]=React.useState('');
+  const [showMap,setShowMap]=React.useState(false)
+  const showMaphandler=()=>{
+    setShowMap(prev=>!prev)
+  }
 
   const ref = React.useRef(null);
 const inputRef = React.useRef(null);
@@ -135,9 +139,14 @@ function countDistance(arr){
       </div>
       <div className={cl.buttons}>
         <button onClick={createWaypointHandler} className={cl.addButton}>Добавить в план</button>
+        <button onClick={showMaphandler} className={cl.addButton}>Показать на карте</button>
       </div>
       </div>
-      <MapWrapper/>
+      
+      {
+        showMap &&
+        <MapWrapper isShown={showMap} hideHandler={showMaphandler}/> 
+      }
     </Container>
   );
 };
