@@ -11,8 +11,10 @@ import MultiPoint from 'ol/geom/MultiPoint.js';
 import {transform} from 'ol/proj';
 import Feature from 'ol/Feature';
 import Polygon from 'ol/geom/Polygon.js';
-import {Circle, Fill, Stroke, Style} from 'ol/style.js';
+import {Circle, Fill, Icon, Stroke, Style} from 'ol/style.js';
 import LineString from 'ol/geom/LineString.js';
+import GeoJSON from 'ol/format/GeoJSON.js';
+import {getDistance} from 'ol/sphere';
 
 const MapWrapper = ({isShown,hideHandler}) => {
   const options = {
@@ -153,6 +155,21 @@ const MapWrapper = ({isShown,hideHandler}) => {
       // set React state
       setSelectedCoord( transformedCoord )
       
+      function getMeDistance(){
+        if(transformedCoord.length>1){
+          const distances= transformedCoord.map((item,idx,arr)=>{
+            if(arr.length>1&& item!=arr[-1]){
+              let c1=arr[idx]
+              let c2=arr[idx+1]
+              return getDistance(c1,c2)/1.852
+            }
+            
+          })
+          return distances
+        }
+        
+      }
+      // console.log(getMeDistance())
     }
     
     const initialFeaturesLayer=new VectorLayer({
@@ -168,17 +185,31 @@ const MapWrapper = ({isShown,hideHandler}) => {
             url: 'https://basemap.nationalmap.gov/arcgis/rest/services/USGSTopo/MapServer/tile/{z}/{y}/{x}',
           })
         }),
-        initialFeaturesLayer
+        new VectorLayer({
+          source:new VectorSource({
+            url:'https://api.maptiler.com/data/b8cecfdf-dc7c-465f-8ca0-eee878b61daf/features.json?key=10XI95JVnXvXtkZigjDA',
+            format:new GeoJSON()
+          }),
+          image:new Style({
+            image: new Icon({
+              src:'https://docs.maptiler.com/openlayers/geojson-points/icon-plane-512.png',
+              size:[512,512],
+              scale:0.03
+            })
+          })
+        })
       ],
       view:new View({
         projection: 'EPSG:3857',
-        center: [46,40],
+        center: [46.0000,40.00000],
         zoom: 3
       }),
       controls:[]
     })
+    // const airports=
     
     setMap(initialMap)
+    
     setFeaturesLayer(initialFeaturesLayer)
     initialMap.on('click',handleMapClick)
   },[])
