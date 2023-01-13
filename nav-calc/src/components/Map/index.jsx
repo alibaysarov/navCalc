@@ -13,8 +13,15 @@ import Feature from 'ol/Feature';
 import Polygon from 'ol/geom/Polygon.js';
 import {Circle, Fill, Icon, Stroke, Style} from 'ol/style.js';
 import LineString from 'ol/geom/LineString.js';
+import Draw from 'ol/interaction/Draw.js';
+
 import GeoJSON from 'ol/format/GeoJSON.js';
 import {getDistance} from 'ol/sphere';
+import {fromLonLat} from 'ol/proj';
+import {toSize} from 'ol/size';
+
+
+
 
 const MapWrapper = ({isShown,hideHandler}) => {
   const options = {
@@ -169,49 +176,144 @@ const MapWrapper = ({isShown,hideHandler}) => {
         }
         
       }
-      // console.log(getMeDistance())
+      
     }
+    const drawStyles=[
+      new Style({
+          stroke:new Stroke({
+          color:'magenta',
+          width:4
+        }),
+        image:new Icon({
+          src:'./img/Triangle.svg',
+          size:toSize([20,20]),
+          scale:1
+        })
+    }),
+    ]
+
+    const drawStyles2=(feature)=>{
+      const geometry=feature.getGeometry();
+      const styles=[
+        //lineString
+        new Style({
+          stroke:new Stroke({
+            color:'magenta',
+            width:4,
+
+          })
+        })
+      ];
+      geometry.forEachSegment((start,end)=>{
+        //icons
+        styles.push(
+          new Style({
+            geometry:new Point(end),
+            image:new Icon({
+              src:'./img/Triangle.svg',
+              anchor: [0.75, 0.5],
+
+            }),
+          })
+        );
+      });
+      return styles
+    }
+    // const styleFunction = function (feature) {
+    //   const geometry = feature.getGeometry();
+    //   const styles = [
+    //     // linestring
+    //     new Style({
+    //       stroke: new Stroke({
+    //         color: 'magenta',
+    //         width: 4,
+    //       }),
+    //     }),
+    //   ];
     
+    //   geometry.forEachSegment(function (start, end) {
+        
+    //     // arrows
+    //     styles.push(
+    //       new Style({
+    //         geometry: new Point(end),
+    //         image: new Icon({
+    //           src: './img/Triangle.svg',
+    //           anchor: [0.75, 0.5],
+              
+              
+    //         }),
+    //       })
+    //     );
+    //   });
+    
+    //   return styles;
+    // };
+
     const initialFeaturesLayer=new VectorLayer({
       source:new VectorSource(),
-      
+      // style:styleFunction,
     })
+    const vector2 = new VectorLayer({
+      source: new VectorSource({
+        url:'https://api.maptiler.com/data/b8cecfdf-dc7c-465f-8ca0-eee878b61daf/features.json?key=10XI95JVnXvXtkZigjDA',
+        format:new GeoJSON()
+      }),
+      style: drawStyles2,
+    });
     const initialMap=new Map({
       target:mapRef.current,
       layers:[
-        //USGS TOPO
         new TileLayer({
-          source:new XYZ({
-            url: 'https://basemap.nationalmap.gov/arcgis/rest/services/USGSTopo/MapServer/tile/{z}/{y}/{x}',
-          })
-        }),
+            source:new XYZ({
+              url: 'https://api.maptiler.com/maps/topo-v2/{z}/{x}/{y}.png?key=10XI95JVnXvXtkZigjDA',
+            })
+          }),
+          
         new VectorLayer({
           source:new VectorSource({
             url:'https://api.maptiler.com/data/b8cecfdf-dc7c-465f-8ca0-eee878b61daf/features.json?key=10XI95JVnXvXtkZigjDA',
             format:new GeoJSON()
           }),
-          image:new Style({
+          
+          style:new Style({
             image: new Icon({
-              src:'https://docs.maptiler.com/openlayers/geojson-points/icon-plane-512.png',
-              size:[512,512],
-              scale:0.03
+              // src:'https://docs.maptiler.com/openlayers/geojson-points/icon-plane-512.png',
+              src:'./img/AirportIcon.svg',
+              size: toSize([40,40]),
+              scale:1
+              
             })
           })
-        })
+        }),
+        
       ],
       view:new View({
         projection: 'EPSG:3857',
-        center: [46.0000,40.00000],
-        zoom: 3
+        center: fromLonLat([37.414722000000,55.972778000000]),
+        zoom: 7
       }),
-      controls:[]
+      controls:[],
+      interactions:[]
     })
     // const airports=
     
     setMap(initialMap)
-    
+    const drawIntercation=new Draw({
+      style:drawStyles,
+      // style:styleFunction,
+      type:'LineString',
+      source:new VectorSource({
+        url:'https://api.maptiler.com/data/b8cecfdf-dc7c-465f-8ca0-eee878b61daf/features.json?key=10XI95JVnXvXtkZigjDA',
+        format:new GeoJSON()
+      }),
+    })
     setFeaturesLayer(initialFeaturesLayer)
     initialMap.on('click',handleMapClick)
+    initialMap.on('contextmenu',(evt)=>{
+      evt.preventDefault()
+      initialMap.addInteraction(drawIntercation)
+    })
   },[])
   
   
@@ -220,9 +322,9 @@ const MapWrapper = ({isShown,hideHandler}) => {
   return (
     <>
     
-    <div style={{height:400+'px',width:100+'%'}} className={cl.map} ref={mapRef}>
+    <div style={{height:100+'%',width:100+'%'}} className={cl.map} ref={mapRef}>
     <p>{selectedCoord}</p>
-    <button onClick={hideHandler} className={cl.hide}>&times;</button>
+    {/* <button onClick={hideHandler} className={cl.hide}>&times;</button> */}
     </div>  
     
     </>

@@ -104,8 +104,8 @@ function countDistance(arr){
         marginTop:70+'px',
         marginBottom:70+'px'
       }}>
-      <Title size={20} weight={400}>Создание точки</Title>
-      <div className={cl.createContent}>
+      {/* <Title size={20} weight={400}>Создание точки</Title> */}
+      {/* <div className={cl.createContent}>
         <Title size={14}>Название</Title>
         <input type="text" style={{marginTop:8+'px'}} className={cl.textInput} value={textInputVal} onChange={inputHandler} />
         <div className={cl.coordinates}>
@@ -142,12 +142,10 @@ function countDistance(arr){
         <button onClick={createWaypointHandler} className={cl.addButton}>Добавить в план</button>
         <button onClick={showMaphandler} className={cl.addButton}>Показать на карте</button>
       </div>
-      </div>
+      </div> */}
       
-      {
-        showMap &&
         <MapWrapper isShown={showMap} hideHandler={showMaphandler}/> 
-      }
+      
     </Container>
   );
 };
