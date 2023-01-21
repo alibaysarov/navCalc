@@ -1,0 +1,22 @@
+.RouteBlock{
+  padding-left: 10px;
+}
+.RouteBlockDate{
+  p{
+    font-family: 'Montserrat';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 15px;
+    line-height: 20px;
+    /* or 133% */
+    letter-spacing: -0.24px;
+    color: rgba(0, 0, 0, 0.57);
+
+
+  }
+  hr{
+    margin-left: 5px;
+    background-color: #D9D9D9;
+    color: #D9D9D9;
+  }
+}
