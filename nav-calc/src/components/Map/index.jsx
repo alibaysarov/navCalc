@@ -63,7 +63,7 @@ const MapWrapper = ({isShown,hideHandler}) => {
   const mapRef=useRef(null)
   const mapStateRef=useRef(null)
   mapStateRef.current=map
- 
+  // const[distance,setDistance]=useState([])
   useEffect(()=>{
     const handleMapClick = (event) => {
     
@@ -73,7 +73,23 @@ const MapWrapper = ({isShown,hideHandler}) => {
       const clickedCoord = mapStateRef.current.getCoordinateFromPixel(event.pixel);
       const transformedCoord = transform(clickedCoord, 'EPSG:3857', 'EPSG:4326')
       coords.push(transformedCoord)
-      console.log(coords)
+      setCoords(prev=>[...prev,transformedCoord])
+      console.log(coords);
+      let totalDistance=0;
+      coords.forEach((item,idx,arr)=>{
+        if(arr.length>1 &&idx>0){
+          
+          // console.log(getDistance(arr[idx],arr[idx+1]));
+         let c1=arr[idx-1]
+         let c2=arr[idx]
+        
+        let range=getDistance(c1,c2)/1000/1.852;
+        // setDistance(prev=>prev+=range)
+        totalDistance+=range;
+        console.log('Общее расстояние:',totalDistance);
+        // console.log(range);
+        }
+      })
       
       const styles=new Style({
         image:new Circle({
@@ -100,18 +116,6 @@ const MapWrapper = ({isShown,hideHandler}) => {
         })
       })
       
-      // const styleFunction = function (feature) {
-      //   const geometry = feature.getGeometry();
-      //   const styles = [
-      //     // linestring
-      //     new Style({
-      //       stroke: new Stroke({
-      //         color: [0,0,0],
-      //         width: 2,
-      //       }),
-      //     }),
-      //   ];
-      // }
       const pointStyle=new Style({
         image:new Circle({
           radius:7,
@@ -147,16 +151,6 @@ const MapWrapper = ({isShown,hideHandler}) => {
       })
       // secondLayer.setStroke(stroke)
       initialMap.addLayer(secondLayer)
-
-
-      // const featureToAdd=new Feature({
-      //   geometry:new Point(event.coordinate)
-      // })
-      
-      // featureToAdd.setStyle(styles)
-      // // initialFeaturesLayer.source.addFeature(featureToAdd)
-      // console.log(featureToAdd)
-      // transform coord to EPSG 4326 standard Lat Long
       
       console.log(transformedCoord)
       // set React state
@@ -278,7 +272,6 @@ const MapWrapper = ({isShown,hideHandler}) => {
           
           style:new Style({
             image: new Icon({
-              // src:'https://docs.maptiler.com/openlayers/geojson-points/icon-plane-512.png',
               src:'./img/AirportIcon.svg',
               size: toSize([40,40]),
               scale:1
@@ -310,12 +303,15 @@ const MapWrapper = ({isShown,hideHandler}) => {
     })
     setFeaturesLayer(initialFeaturesLayer)
     initialMap.on('click',handleMapClick)
-    initialMap.on('contextmenu',(evt)=>{
-      evt.preventDefault()
-      initialMap.addInteraction(drawIntercation)
-    })
+    // initialMap.on('contextmenu',(evt)=>{
+    //   evt.preventDefault()
+    //   initialMap.addInteraction(drawIntercation)
+      
+    //   const clickedCoord2 = mapStateRef.current.getCoordinateFromPixel(evt.pixel);
+    //   const transformedCoord2 = transform(clickedCoord2, 'EPSG:3857', 'EPSG:4326')
+    //   setCoords(prev=>[...prev,transformedCoord2])
+    // })
   },[])
-  
   
   
   
