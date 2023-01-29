@@ -1,6 +1,6 @@
 import express from 'express'
 import cors from "cors";
-
+import fs from "fs";
 const PORT=5000;
 const app=express();
 app.use(express.json())
@@ -29,6 +29,22 @@ app.get('/',(req,res)=>{
   })
   }
   
+})
+
+
+app.get('/cta',(req,res)=>{
+  let src
+  try {
+    fs.readFile('CTA.geojson','utf-8',(err,data)=>{
+      src=data;
+      src=JSON.parse(src)
+      res.status(200).json(src)
+    })
+   
+    
+  } catch (err) {
+    
+  }
 })
 
 app.listen(PORT,()=>console.log('Server has been started!!!'))

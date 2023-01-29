@@ -23,7 +23,7 @@ import {toSize} from 'ol/size';
 import TileSource from 'ol/source/Tile';
 import MapContext  from "./mapContext";
 
-
+import CTA  from "./CTA.json";
 
 const MapWrapper = ({children}) => {
  
@@ -46,15 +46,30 @@ const MapWrapper = ({children}) => {
         url:'https://api.maptiler.com/maps/outdoor-v2/style.json?key=10XI95JVnXvXtkZigjDA'
       })
     })
+    const ctaLayer=new VectorLayer({
+      source:new VectorSource({
+        format:new GeoJSON(),
+        url:'http://localhost:5000/cta'
+      }),
+      style:new Style({
+        fill:new Fill({
+          color:'transparent'
+        }),
+        stroke:new Stroke({
+          width:4,
+          color:'#A6D8A9'
+        })
+      })
+    })
     const defaultMap=new Map({
       target:mapRef.current,
-      layers:[defaultLayer],
+      layers:[defaultLayer,ctaLayer],
       view:new View({
         center:fromLonLat([55,54]),
         zoom:7,
       })
     });
-
+    
     setMap(defaultMap);
     defaultMap.on('click',coordHandler)
     return () => defaultMap.setTarget(undefined);
@@ -65,9 +80,7 @@ const MapWrapper = ({children}) => {
     <>
     <MapContext.Provider value={{map}}>
     <div style={{height:100+'%',width:100+'%'}} className={cl.map} ref={mapRef}>
-      {
-        children
-      }
+      
     </div>  
     </MapContext.Provider>
     

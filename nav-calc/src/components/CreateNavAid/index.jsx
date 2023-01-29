@@ -144,9 +144,9 @@ function countDistance(arr){
       </div>
       </div> */}
       
-        <MapWrapper isShown={showMap} hideHandler={showMaphandler}>
+        <MapWrapper isShown={showMap} hideHandler={showMaphandler}/>
           
-        </MapWrapper> 
+       
       
     </Container>
   );
