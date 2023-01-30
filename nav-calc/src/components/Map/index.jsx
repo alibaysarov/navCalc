@@ -29,9 +29,7 @@ const MapWrapper = ({children}) => {
  
   const mapRef=React.useRef(null);
   const [map ,setMap]=React.useState(null);
-  const coordHandler=(evt)=>{
-    console.log(evt.pixel)
-  }
+  
   React.useEffect(()=>{
     const defaultLayer=new TileLayer({
       source:new XYZ({
@@ -49,7 +47,34 @@ const MapWrapper = ({children}) => {
     const ctaLayer=new VectorLayer({
       source:new VectorSource({
         format:new GeoJSON(),
-        url:'http://localhost:5000/cta'
+        url:'http://localhost:5000/cta',
+      }),
+      style:function(feature){
+        function getColor(feature){
+            // console.log(feature.values_.class)
+          if(feature.values_.class.toUpperCase()=='C'.toUpperCase()){
+            return '#6181B3'
+          }else{
+            return '#8BCD93'
+          }
+        }
+        return new Style({
+          fill:new Fill({
+            color:'transparent'
+          }),
+          stroke:new Stroke({
+            width:4,
+            color:getColor(feature)
+          })
+        })
+      }
+      
+      
+    })
+    const ctrLayer=new VectorLayer({
+      source:new VectorSource({
+        format:new GeoJSON(),
+        url:'http://localhost:5000/ctr'
       }),
       style:new Style({
         fill:new Fill({
@@ -63,7 +88,7 @@ const MapWrapper = ({children}) => {
     })
     const defaultMap=new Map({
       target:mapRef.current,
-      layers:[defaultLayer,ctaLayer],
+      layers:[defaultLayer,ctrLayer,ctaLayer],
       view:new View({
         center:fromLonLat([55,54]),
         zoom:7,
@@ -71,7 +96,10 @@ const MapWrapper = ({children}) => {
     });
     
     setMap(defaultMap);
-    defaultMap.on('click',coordHandler)
+    const coordHandler=(evt)=>{
+      console.log(evt.coordinates)
+    }
+    defaultMap.on('mousemove',coordHandler)
     return () => defaultMap.setTarget(undefined);
   },[])
   

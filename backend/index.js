@@ -41,7 +41,19 @@ app.get('/cta',(req,res)=>{
       res.status(200).json(src)
     })
    
+  } catch (err) {
     
+  }
+})
+app.get('/ctr',(req,res)=>{
+  let src
+  try {
+    fs.readFile('CTR.geojson','utf-8',(err,data)=>{
+      src=data;
+      src=JSON.parse(src)
+      res.status(200).json(src)
+    })
+   
   } catch (err) {
     
   }
