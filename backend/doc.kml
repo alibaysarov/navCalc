@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:kml="http://www.opengis.net/kml/2.2" xmlns:atom="http://www.w3.org/2005/Atom">
+<NetworkLink>
+	<name>ВП РФ 07.03.2013</name>
+	<open>1</open>
+	<description><![CDATA[Структура воздушного пространства Российской Федерации.<br>
+Введена в действие с 28.06.2012г.<br>
+<br>Copyright © 2011 <a href="http://www.aopa.ru">АОПА-Россия</a>]]></description>
+	<Link>
+		<href>http://aopa.ru/maps/root_v02.kmz</href>
+	</Link>
+</NetworkLink>
+</kml>

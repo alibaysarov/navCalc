@@ -1,0 +1,145 @@
+//Планировщик
+.planner{
+  background-color: #fff;
+  padding: 20px;
+  border-radius:10px;
+  position: absolute;
+  margin-top: 3px;
+  margin-left: 3px;
+  z-index: 250;
+  width: 100%;
+  max-width: 530px;
+}
+.content{
+  display: grid;
+  grid-gap: 20px;
+}
+.flightParams{
+  display: grid;
+  grid-gap: 10px;
+  grid-template-columns: 1fr 1fr;
+}
+.input{
+span{
+  display: block;
+  margin-bottom: 5px;
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 1.1;
+  font-weight: 600;
+  color: rgba(60, 60, 67, 0.79);
+}
+}
+.inputInner{
+  position: relative;
+  input{
+    outline:none;
+    width: 100%;
+    padding: 8px;
+    border-radius:6px;
+    border:1px solid rgba(60, 60, 67, 0.55);
+  }
+  img{
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 5px;
+  }
+}
+.row{
+  display: grid;
+  grid-gap: 10px;
+  grid-template-columns: 1fr 1fr;
+  select{
+    appearance:none;
+    outline: none;
+    width: 100%;
+    border-radius: 5px;
+    padding: 8px;
+    font-family: 'Montserrat';
+      font-style: normal;
+      font-weight: 600;
+      font-size: 16px;
+      line-height: 16px;
+      letter-spacing: -0.078px;
+
+      color: #333333;
+    border:1px solid rgba(60, 60, 67, 0.55);
+    option{
+      width: 100px;
+      font-family: 'Montserrat';
+      font-style: normal;
+      font-weight: 600;
+      font-size: 16px;
+      line-height: 16px;
+      letter-spacing: -0.078px;
+
+      color: #333333;
+    }
+  }
+  select+img{
+    right: 7px;
+  }
+}
+.textarea{
+  display: grid;
+  grid-gap: 10px;
+  textarea{
+    resize: none;
+    max-width: 100%;
+    padding: 5px;
+    border-radius:5px;
+    outline: none;
+    font-size: 17px;
+    font-family:'Montserrat', sans-serif;
+    font-weight: 500;
+    border:1px solid rgba(60, 60, 67, 0.55);
+  }
+  .flightInfo{
+    display: flex;
+    gap:7px;
+    p{
+      font-family: 'Montserrat';
+      font-style: normal;
+      font-weight: 500;
+      font-size: 15px;
+      line-height: 1.1;
+      color: #2C87F1;
+      span{
+        font-weight: 700;
+      }
+    }
+  }
+}
+.bottom{
+  display: grid;
+  justify-content: end;
+  button{
+    outline: none;
+    border:none;
+    background-color: #007AFF;
+    border-radius:10px;
+    font-size: 16px;
+    padding: 17px 25px;
+    font-family: 'Montserrat',sans-serif;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 1.1;
+    /* identical to box height, or 140% */
+    letter-spacing: -0.408px;
+
+    /* Dark / Base */
+
+    color: #FFFFFF;
+    cursor: pointer;
+    transform: background-color 0.3s ease, transform 0.4s ease;
+    &:hover{
+      background-color: darken($color: #007AFF, $amount: 2)
+    }
+    &:active{
+      transform: scale(.98);
+    }
+  }
+}
