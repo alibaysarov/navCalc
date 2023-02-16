@@ -1,6 +1,21 @@
-import React from 'react';
+import React,{useState} from 'react';
 import cl from './index.module.scss';
+import { useSelector, useDispatch } from 'react-redux';
+import { showTime, spdInputHandler,deleteInputHandler } from '../../redux/slices/planSlice';
 const Planner = () => {
+  const dispatch=useDispatch()
+  const {distance,speed,time}=useSelector((state)=>state);
+  
+  
+  const inputHandler=(e)=>{
+    e.target.value=e.target.value.replace(/[^0-9]/g,'')
+    dispatch(spdInputHandler({value:e.target.value}))
+    dispatch(showTime())
+  }
+  const deleteHandler=(e)=>{
+    dispatch(deleteInputHandler({name:e.target.name}))
+    // console.log(e.target.name); 
+  }
   return (
     <div className={cl.planner}>
       <div className={cl.content}>
@@ -9,8 +24,8 @@ const Planner = () => {
           <div className={cl.input}>
             <span>Скорость</span>
             <div className={cl.inputInner}>
-              <input type="text" />
-              <img src="img/arrowDown.svg" width={25} height={25} alt="" />
+              <input type="text" value={speed} onChange={(e)=>{inputHandler(e);}}  />
+              <img name={'speed'} onClick={e=>deleteHandler(e)} src="img/arrowDown.svg" width={25} height={25} alt="" />
             </div>
           </div>
           <div className={cl.input}>
@@ -51,8 +66,8 @@ const Planner = () => {
         </div>
         <div className={cl.textarea}>
           <div className={cl.flightInfo}>
-            <p>Расстояние: <span>30 км</span></p>
-            <p>Время: <span>39 мин</span></p>
+            <p>Расстояние: <span>{distance} км</span></p>
+            <p>Время: <span>{time==NaN?'---':time} мин</span></p>
             <p>Расход топлива: <span>20 л.</span></p>
           </div>
           <textarea  cols="30" rows="10"></textarea>

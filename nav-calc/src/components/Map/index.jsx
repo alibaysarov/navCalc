@@ -30,10 +30,31 @@ import MapContext  from "./mapContext";
 import CTA  from "./CTA.json";
 import Interaction from 'ol/interaction/Interaction';
 
-const MapWrapper = ({children}) => {
- 
+//redux
+import { useDispatch } from "react-redux";
+import { showDistance,showTime } from '../../redux/slices/planSlice.js';
+
+const MapWrapper = ({children,paramsChangeHandler}) => {
+  const dispatch=useDispatch()
   const mapRef=React.useRef(null);
   const [map ,setMap]=React.useState(null);
+  
+  const geoOptions={
+    enableHighAccuracy: true,
+    timeout: 3000,
+    maximumAge: 0
+  }
+  let centerMap=[0,0]
+  function success(pos) {
+    const crd = pos.coords;
+    centerMap=[crd.longitude,+crd.latitude]  
+  }
+  
+  function error(err) {
+    console.warn(`ERROR(${err.code}): ${err.message}`);
+  }  
+  navigator.geolocation.getCurrentPosition(success, error, geoOptions);
+  
   
   React.useEffect(()=>{
     const defaultLayer=new TileLayer({
@@ -90,13 +111,15 @@ const MapWrapper = ({children}) => {
         })
       })
     })
+    
     const defaultMap=new Map({
       target:mapRef.current,
       layers:[defaultLayer,ctrLayer,ctaLayer],
       view:new View({
-        center:fromLonLat([55,54]),
+        center:fromLonLat(centerMap),
         zoom:7,
-      })
+      }),
+      controls:[]
     });
     
     setMap(defaultMap);
@@ -164,6 +187,8 @@ const MapWrapper = ({children}) => {
         const totalDistance=Math.round(getLength(wpGeometry,{projection:'EPSG:4326'})/1000);
 
         console.log(totalDistance,'КМ.')
+        dispatch(showDistance({distance:totalDistance}))
+        dispatch(showTime())
         abc=abc+1
         // console.log(e)
         

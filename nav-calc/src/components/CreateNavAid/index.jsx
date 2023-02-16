@@ -14,12 +14,7 @@ const CreateNavAid = () => {
   const inputHandler=(e)=>{
     setTextInputVal(e.target.value)
   }
-  const[latVal,setLatVal]=React.useState('');
-  const[lngVal,setLngVal]=React.useState('');
-  const [showMap,setShowMap]=React.useState(false)
-  const showMaphandler=()=>{
-    setShowMap(prev=>!prev)
-  }
+  
 
   const ref = React.useRef(null);
 const inputRef = React.useRef(null);
@@ -37,65 +32,13 @@ const coordsDecimal=(str)=>{
   return sign*output.toFixed(5)
 
 }
-const latInputHandler=(e)=>{
-  setLatVal(e.target.value)
-  console.log(latVal)
-}
-const lngInputHandler=(e)=>{
-  setLngVal(e.target.value)
-  console.log(lngVal)
-}
-class WayPoint{
-  constructor(lat,lng){
-    this.lat=lat
-    this.lng=lng
-  }
-}
-
-const [wpArray,setWpArray]=React.useState([])
-const createWaypointHandler=()=>{
-  if(latVal=='' || lngVal==''){
-    return
-  }else{
-    setWpArray(prev=>[...prev,new WayPoint(coordsDecimal(latVal),coordsDecimal(lngVal))])
-
-    if(wpArray.length>1){
-      function addDistanceToWpt(item,index){
-        if(index>0){
-          let distToWpt=countDistance(wpArray)[index+1]?countDistance(wpArray)[index+1]:0
-        return{
-          ...item,
-          distanceToWpt:distToWpt
-        }
-        }else{
-          return{
-            ...item,
-            distanceToWpt:'---'
-          }
-        }
-      }
-      setWpArray(prev=>prev.map(addDistanceToWpt))
-      console.log(wpArray)
-      // wpArray.map(addDistanceToWpt)
-    }
-  
-  }
-  
-}
-
-
-function countDistance(arr){
-  if(arr.length<2){
-    return 0
-  }
-  let legs=[]
-  for (let i = 0; i < arr.length; i++) {
-    const fromElem = arr[i];
-    const toElem=arr[i+1]?arr[i+1]:fromElem
-    legs.push(SphericalUtil.computeDistanceBetween(fromElem,toElem)/1000/1.852)
-  }
-
-  return legs.slice(0,-1)
+const [flightParams,setFlightParams]=useState({
+  distance:'---',
+  time:'---',
+  fuelFlow:'---',
+})
+const paramsChangeHandler=(name)=>{
+  console.log(name);
 }
 const [openFlightPlan,setOpenFlightPlan]=useState(false);
 
@@ -117,21 +60,10 @@ const [openFlightPlan,setOpenFlightPlan]=useState(false);
         </svg>
       </div>
     </div>
-    {
-      openFlightPlan&&<Planner/>
-    }
-      
+      {openFlightPlan&&<Planner/>}
 
-      <Container
-        styles={{
-          marginTop:70+'px',
-          marginBottom:70+'px'
-        }}>
-          
-          <MapWrapper  isShown={showMap} hideHandler={showMaphandler}/>
-            
-         
-        
+      <Container styles={{marginTop:70+'px',marginBottom:70+'px'}}>
+        <MapWrapper/>
       </Container>
    </>
   );
