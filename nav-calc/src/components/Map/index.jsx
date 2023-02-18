@@ -27,15 +27,20 @@ import {toSize} from 'ol/size';
 import TileSource from 'ol/source/Tile';
 import Snap from 'ol/interaction/Snap.js'
 import MapContext  from "./mapContext";
-import CTA  from "./CTA.json";
 import Interaction from 'ol/interaction/Interaction';
 
 //redux
-import { useDispatch } from "react-redux";
+import { useDispatch,useSelector } from "react-redux";
 import { showDistance,showTime } from '../../redux/slices/planSlice.js';
+import {drawHandler} from '../../redux/slices/mapSlice.js';
 
+//new imports
+import { mapLayers,vector,source,modify,snap,draw } from "./utils/mapLayers.js";
+import mapLogic from "./utils/mapLogic.js";
 const MapWrapper = ({children,paramsChangeHandler}) => {
   const dispatch=useDispatch()
+  const {isLineAdded}=useSelector((state)=>state.map)
+  
   const mapRef=React.useRef(null);
   const [map ,setMap]=React.useState(null);
   
@@ -57,64 +62,9 @@ const MapWrapper = ({children,paramsChangeHandler}) => {
   
   
   React.useEffect(()=>{
-    const defaultLayer=new TileLayer({
-      source:new XYZ({
-        url:'https://tile.openstreetmap.org/{z}/{x}/{y}.png'
-      })
-    })
-    const defaultVectorLayer=new VectorLayer({
-      source:new VectorSource({
-        format:new GeoJSON({
-          dataProjection:'EPSG:4326',
-        }),
-        url:'https://api.maptiler.com/maps/outdoor-v2/style.json?key=10XI95JVnXvXtkZigjDA'
-      })
-    })
-    const ctaLayer=new VectorLayer({
-      source:new VectorSource({
-        format:new GeoJSON(),
-        url:'http://localhost:5000/cta',
-      }),
-      style:function(feature){
-        function getColor(feature){
-          if(feature.values_.class.toUpperCase()=='C'.toUpperCase()){
-            return '#6181B3'
-          }else{
-            return '#8BCD93'
-          }
-        }
-        return new Style({
-          fill:new Fill({
-            color:'transparent'
-          }),
-          stroke:new Stroke({
-            width:4,
-            color:getColor(feature)
-          })
-        })
-      }
-      
-      
-    })
-    const ctrLayer=new VectorLayer({
-      source:new VectorSource({
-        format:new GeoJSON(),
-        url:'http://localhost:5000/ctr'
-      }),
-      style:new Style({
-        fill:new Fill({
-          color:'transparent'
-        }),
-        stroke:new Stroke({
-          width:4,
-          color:'#A6D8A9'
-        })
-      })
-    })
-    
     const defaultMap=new Map({
       target:mapRef.current,
-      layers:[defaultLayer,ctrLayer,ctaLayer],
+      layers:mapLayers,
       view:new View({
         center:fromLonLat(centerMap),
         zoom:7,
@@ -123,100 +73,61 @@ const MapWrapper = ({children,paramsChangeHandler}) => {
     });
     
     setMap(defaultMap);
-    const coordHandler=(evt)=>{
-      console.log(evt.coordinates)
-    }
-    const source=new VectorSource({wrapX:false})
-      const vector=new VectorLayer({
-        source:source,
-        style: {
-          'fill-color': 'magenta',
-          'stroke-color': 'magenta',
-          'stroke-width': 4,
-          'circle-radius': 7,
-          'circle-fill-color': 'magenta',
-        },
-      })
-      defaultMap.addLayer(vector)
-      var abc=100;
-      let projection=defaultMap.getView().getProjection();
+    defaultMap.addLayer(vector)
+      
+    let projection=defaultMap.getView().getProjection();
     defaultMap.on('contextmenu',function(evt){
-      
-      const modify = new Modify({source: source});
       defaultMap.addInteraction(modify);
-      const draw = new Draw({
-        source: source,
-        type: 'LineString',
-        geometryName:'wp'
-      });
-  //     var draw; // global so we can remove it later
-  //   function addInteraction() {
-  //       var value = typeSelect.value;
-  //       if (value !== 'None') {
-  //           draw = new ol.interaction.Draw({
-  //               source: source,
-  //               type: /** @type {ol.geom.GeometryType} */ (typeSelect.value)
-  //           });
-  //           map.addInteraction(draw);
-  //          draw.on("drawend",function(e){
-  //          var writer = new ol.format.GeoJSON();
-  //          //pass the feature as an array
-  //          var geojsonStr = writer.writeFeatures([e.feature]);
-  //          alert(geojsonStr)
-  //   });
-  //  }
-      const snap = new Snap({source: source});
-      
-      defaultMap.on('click',()=>{
+      function finishDrawingHandler(){
         defaultMap.removeInteraction(draw);
-        draw.abortDrawing()
+        draw.finishDrawing()
         defaultMap.addInteraction(snap);
-      })
-      defaultMap.addInteraction(draw);
-      defaultMap.addInteraction(snap);
+      }
+      defaultMap.on('click',finishDrawingHandler);
+      
+      if(isLineAdded==false){
+        defaultMap.addInteraction(draw);
+        defaultMap.addInteraction(snap);
+      }else{
+        defaultMap.removeInteraction(draw);
+        defaultMap.removeInteraction(snap)
+      }
+      
       
       draw.on('drawend',(e)=>{
+        dispatch(drawHandler())
         let writer=new GeoJSON();
-        let geojsonStr =JSON.parse( writer.writeFeatures([e.feature]));
-        
+        let geojsonStr =JSON.parse( writer.writeFeatures([e.feature])); 
         const waypoints=geojsonStr.features[0].geometry.coordinates;
-        console.log(waypoints)
+       
         const newWs=waypoints.map(wp=>transform(wp,projection,'EPSG:4326'))
         
         const wpGeometry=new LineString(newWs);
         const totalDistance=Math.round(getLength(wpGeometry,{projection:'EPSG:4326'})/1000);
 
-        console.log(totalDistance,'КМ.')
+  
         dispatch(showDistance({distance:totalDistance}))
         dispatch(showTime())
-        abc=abc+1
-        // console.log(e)
+        
         
       })
       modify.on('modifyend',(e)=>{
-        // console.log(e.target.dragSegments_)
-        const writer=new GeoJSON();
-        // console.log(e.features.array_[0].values_.wp.flatCoordinates)
-        let modifiedCoords=e.features.array_[0].values_.wp.flatCoordinates;
-        let newCoords=[];
         
-        modifiedCoords.forEach((item,idx,arr)=>{
-          if(idx%2==0){
-            newCoords.push([arr.slice(idx,idx+2)])
-          }
-        })
         
-        let changedWpts=transform(newCoords[0],projection,'EPSG:4326')
-        let geom=new LineString(changedWpts)
-        const totalDistance=Math.round(getLength(geom,{projection:'EPSG:4326'}));
-        console.log(totalDistance)
+        const targetGeometry=e.features.array_
+          .map(el=>el.getGeometry()).map(item=>item.flatCoordinates)
         
-        // let changedWps=geom.transform(projection,'EPSG:4326')
-        // console.log(changedWps)
+        const coordinates=mapLogic.uniteCoords(targetGeometry.at(-1))
+          .map(item=>transform(item,projection,'EPSG:4326'))
+        
+        let geom=new LineString(coordinates)
+        const totalDistance=Math.round(getLength(geom,{projection:'EPSG:4326'})/1000)
+        dispatch(showDistance({distance:totalDistance}))
+        dispatch(showTime())
 
       })
     })
-    defaultMap.on('mousemove',coordHandler)
+    
     return () => defaultMap.setTarget(undefined);
     
   },[])
@@ -225,7 +136,7 @@ const MapWrapper = ({children,paramsChangeHandler}) => {
   return (
     <>
       <MapContext.Provider value={{map}}>
-          <div style={{height:100+'%',width:100+'%'}} className={cl.map} ref={mapRef}></div>  
+          <div style={{height:'100%',width:'100%'}} className={cl.map} ref={mapRef}></div>  
       </MapContext.Provider>
     </>
     

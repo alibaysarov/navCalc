@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { showTime, spdInputHandler,deleteInputHandler } from '../../redux/slices/planSlice';
 const Planner = () => {
   const dispatch=useDispatch()
-  const {distance,speed,time}=useSelector((state)=>state);
+  const {distance,speed,time}=useSelector((state)=>state.plan);
   
   
   const inputHandler=(e)=>{
