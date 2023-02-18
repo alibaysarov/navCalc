@@ -86,7 +86,7 @@ span{
 .textarea{
   display: grid;
   grid-gap: 10px;
-  textarea{
+  .routeContent{
     resize: none;
     max-width: 100%;
     padding: 5px;
@@ -94,8 +94,45 @@ span{
     outline: none;
     font-size: 17px;
     font-family:'Montserrat', sans-serif;
+    min-height: 230px;
+    max-width: 490px;
     font-weight: 500;
     border:1px solid rgba(60, 60, 67, 0.55);
+    .routeItem{
+      display: flex;
+      gap:20px;
+      align-items: center;
+      padding: 10px 20px;
+      border:1px solid rgba($color: #000000, $alpha: .77);
+      margin-bottom:5px;
+      border-radius:5px;
+      .itemNumber{
+        display: inline-block;
+        padding: 5px 12px;
+        border-radius:15px;
+        // border:1px solid rgba($color: #000000, $alpha: .77);
+        background-color: #2C87F1;
+        color: #fff;
+      }
+      .coords,.time{
+        display: flex;
+        flex-direction: column;
+        gap:5px;
+        font-size: 15px;
+        strong{
+          font-size: 13px;
+        }
+      }
+      .distance{
+        display: flex;
+        flex-direction: column;
+        gap:5px;
+        
+        strong{
+          font-size: 13px;
+        }
+      }
+    }
   }
   .flightInfo{
     display: flex;

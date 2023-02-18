@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { showTime, spdInputHandler,deleteInputHandler } from '../../redux/slices/planSlice';
 const Planner = () => {
   const dispatch=useDispatch()
-  const {distance,speed,time}=useSelector((state)=>state.plan);
+  const {distance,speed,time,waypoints}=useSelector((state)=>state.plan);
   
   
   const inputHandler=(e)=>{
@@ -67,10 +67,30 @@ const Planner = () => {
         <div className={cl.textarea}>
           <div className={cl.flightInfo}>
             <p>Расстояние: <span>{distance} км</span></p>
-            <p>Время: <span>{time==NaN?'---':time} мин</span></p>
+            <p>Время: <span>{time==NaN?'---':time}</span></p>
             <p>Расход топлива: <span>20 л.</span></p>
           </div>
-          <textarea  cols="30" rows="10"></textarea>
+          <div className={cl.routeContent}>
+            {waypoints.length
+            ?waypoints.map((item,id)=>(
+              <div className={cl.routeItem}>
+                 <span className={cl.itemNumber}>{id+1}</span>
+                 <div className={cl.coords}>
+                  {item.latlng}
+                  <strong>Координаты:</strong>
+                  </div>
+                 <div className={cl.distance}>
+                    {item.distFrom?item.distFrom+" Км.":'---'} 
+                    <strong>Расстояние:</strong>
+                  </div>
+                  <div className={cl.time}>
+                    {item.time}
+                    <strong>ETE:</strong>
+                  </div>
+              </div>
+            ))
+            :''}
+          </div>
         </div>
         <div className={cl.bottom}>
           <button className={cl.button}>Подать план полёта</button>

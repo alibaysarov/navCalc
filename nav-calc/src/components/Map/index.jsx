@@ -28,10 +28,10 @@ import TileSource from 'ol/source/Tile';
 import Snap from 'ol/interaction/Snap.js'
 import MapContext  from "./mapContext";
 import Interaction from 'ol/interaction/Interaction';
-
+import {toStringHDMS} from 'ol/coordinate.js';
 //redux
 import { useDispatch,useSelector } from "react-redux";
-import { showDistance,showTime } from '../../redux/slices/planSlice.js';
+import { showDistance,showTime,pointsList } from '../../redux/slices/planSlice.js';
 import {drawHandler} from '../../redux/slices/mapSlice.js';
 
 //new imports
@@ -40,7 +40,7 @@ import mapLogic from "./utils/mapLogic.js";
 const MapWrapper = ({children,paramsChangeHandler}) => {
   const dispatch=useDispatch()
   const {isLineAdded}=useSelector((state)=>state.map)
-  
+  const {speed}=useSelector((state)=>state.plan)
   const mapRef=React.useRef(null);
   const [map ,setMap]=React.useState(null);
   
@@ -66,7 +66,7 @@ const MapWrapper = ({children,paramsChangeHandler}) => {
       target:mapRef.current,
       layers:mapLayers,
       view:new View({
-        center:fromLonLat(centerMap),
+        center:fromLonLat([37,55]),
         zoom:7,
       }),
       controls:[]
@@ -103,12 +103,28 @@ const MapWrapper = ({children,paramsChangeHandler}) => {
         const newWs=waypoints.map(wp=>transform(wp,projection,'EPSG:4326'))
         
         const wpGeometry=new LineString(newWs);
+        let startDistance=[]
+        wpGeometry.forEachSegment((start,end)=>{
+          let distanceTo=(getDistance(start,end)/1000).toFixed(2)
+          startDistance.push(+distanceTo)
+        });
+        console.log(startDistance);
         const totalDistance=Math.round(getLength(wpGeometry,{projection:'EPSG:4326'})/1000);
 
-  
+        const stringCoords=newWs.map((item,idx)=>{
+          let time=(startDistance[idx]/speed)*60
+          time= mapLogic.timeToString(time)
+          
+          return{
+            latlng:toStringHDMS(item).replace(/\s/g,''),
+            distFrom:startDistance[idx]||0,
+            time:time!='Invalid D'?time:'---'
+          }
+        })
+        // console.log(stringCoords);
         dispatch(showDistance({distance:totalDistance}))
         dispatch(showTime())
-        
+        dispatch(pointsList(stringCoords))
         
       })
       modify.on('modifyend',(e)=>{
@@ -118,9 +134,30 @@ const MapWrapper = ({children,paramsChangeHandler}) => {
           .map(el=>el.getGeometry()).map(item=>item.flatCoordinates)
         
         const coordinates=mapLogic.uniteCoords(targetGeometry.at(-1))
-          .map(item=>transform(item,projection,'EPSG:4326'))
+          .map(item=>transform(item,projection,'EPSG:4326'));
+
+        
+          
         
         let geom=new LineString(coordinates)
+        const startDistance=[];
+        geom.forEachSegment((start,end)=>{
+          let distanceTo=(getDistance(start,end)/1000).toFixed(2)
+          startDistance.push(+distanceTo)
+        })
+        const stringCoords=coordinates.map((item,idx)=>{
+          
+          let time=(startDistance[idx]/speed)*60
+          time= mapLogic.timeToString(time)
+          
+          return{
+            latlng:toStringHDMS(item).replace(/\s/g,''),
+            distFrom:startDistance[idx]||0,
+            time:time!='Invalid D'?time:'---'
+          }
+        
+        })
+        dispatch(pointsList(stringCoords))
         const totalDistance=Math.round(getLength(geom,{projection:'EPSG:4326'})/1000)
         dispatch(showDistance({distance:totalDistance}))
         dispatch(showTime())
