@@ -1,5 +1,8 @@
 import Number from "./mathLogic";
 
+
+import { SphericalUtil } from "node-geometry-library";
+import geomagnetism from 'geomagnetism';
 //Путевая скорость
 
 export const groundSpeed=(airSpd,windSpd,magnHdg,windDir)=>{
@@ -50,5 +53,35 @@ export const groundSpeed=(airSpd,windSpd,magnHdg,windDir)=>{
     return isNaN(navData.groundSpeed)
     ?'---'
     :navData
+    
+}
+
+export const airData=(leg)=>{
+    console.log(leg);
+    const {start,end}=leg;
+    let trueHeading='---';
+    if(end==null){
+        return trueHeading;
+    }else{
+    
+    const pointA={
+        lat:start[1],
+        lng:start[0]
+    }
+    const pointB={
+        lat:end[1],
+        lng:end[0]
+    }
+    trueHeading=SphericalUtil.computeHeading(pointA,pointB);
+    // >0?trueHeading:360-trueHeading
+    trueHeading=trueHeading>0?trueHeading:360-trueHeading;
+    const magneticVariation=geomagnetism.model().point([pointB.lat,pointB.lng]).decl;
+    // console.log(magneticVariation);
+    const magnetHeading=trueHeading-magneticVariation;
+    
+    return {trueHeading,magnetHeading};
+
+
+    }
     
 }

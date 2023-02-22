@@ -2,6 +2,7 @@ import React,{useState} from 'react';
 import cl from './index.module.scss';
 import { useSelector, useDispatch } from 'react-redux';
 import { showTime, spdInputHandler,deleteInputHandler } from '../../redux/slices/planSlice';
+
 const Planner = () => {
   const dispatch=useDispatch()
   const {distance,speed,time,waypoints}=useSelector((state)=>state.plan);

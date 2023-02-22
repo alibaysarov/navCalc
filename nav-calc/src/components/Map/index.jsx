@@ -31,7 +31,7 @@ import Interaction from 'ol/interaction/Interaction';
 import {toStringHDMS} from 'ol/coordinate.js';
 //redux
 import { useDispatch,useSelector } from "react-redux";
-import { showDistance,showTime,pointsList } from '../../redux/slices/planSlice.js';
+import { showDistance,showTime,pointsList,getMeWind } from '../../redux/slices/planSlice.js';
 import {drawHandler} from '../../redux/slices/mapSlice.js';
 
 //new imports
@@ -71,38 +71,45 @@ const MapWrapper = ({children,paramsChangeHandler}) => {
       }),
       controls:[]
     });
-    
     setMap(defaultMap);
     defaultMap.addLayer(vector)
+    
+    function finishDrawingHandler(){
       
+      defaultMap.removeInteraction(draw);
+      draw.finishDrawing()
+      defaultMap.addInteraction(snap);
+    }
+
     let projection=defaultMap.getView().getProjection();
-    defaultMap.on('contextmenu',function(evt){
-      defaultMap.addInteraction(modify);
-      function finishDrawingHandler(){
-        defaultMap.removeInteraction(draw);
-        draw.finishDrawing()
-        defaultMap.addInteraction(snap);
-      }
-      defaultMap.on('click',finishDrawingHandler);
-      
-      if(isLineAdded==false){
+    
+    
+      defaultMap.on('contextmenu',function(evt){
+        defaultMap.addInteraction(modify);
+        console.log(isLineAdded);
         defaultMap.addInteraction(draw);
         defaultMap.addInteraction(snap);
-      }else{
-        defaultMap.removeInteraction(draw);
-        defaultMap.removeInteraction(snap)
-      }
-      
-      
+        // if(draw.map_.coordinateToPixelTransform_.length>=4){
+        //   defaultMap.removeInteraction(draw);
+        // defaultMap.removeInteraction(snap);
+        // }
+      })
+    
+    
+    defaultMap.on('click',finishDrawingHandler);
       draw.on('drawend',(e)=>{
         dispatch(drawHandler())
+        if(draw.map_.coordinateToPixelTransform_.length>=4){
+          draw.finishDrawing()
+        }
+        
         let writer=new GeoJSON();
         let geojsonStr =JSON.parse( writer.writeFeatures([e.feature])); 
         const waypoints=geojsonStr.features[0].geometry.coordinates;
        
         const newWs=waypoints.map(wp=>transform(wp,projection,'EPSG:4326'))
-        
         const wpGeometry=new LineString(newWs);
+        
         let startDistance=[]
         wpGeometry.forEachSegment((start,end)=>{
           let distanceTo=(getDistance(start,end)/1000).toFixed(2)
@@ -114,8 +121,13 @@ const MapWrapper = ({children,paramsChangeHandler}) => {
         const stringCoords=newWs.map((item,idx)=>{
           let time=(startDistance[idx]/speed)*60
           time= mapLogic.timeToString(time)
-          
+          console.log(newWs);
+          dispatch(getMeWind(newWs[idx+1]))
           return{
+            leg:{
+              start:newWs[idx],
+              end:newWs[idx+1]||null
+            },
             latlng:toStringHDMS(item).replace(/\s/g,''),
             distFrom:startDistance[idx]||0,
             time:time!='Invalid D'?time:'---'
@@ -163,8 +175,7 @@ const MapWrapper = ({children,paramsChangeHandler}) => {
         dispatch(showTime())
 
       })
-    })
-    
+
     return () => defaultMap.setTarget(undefined);
     
   },[])

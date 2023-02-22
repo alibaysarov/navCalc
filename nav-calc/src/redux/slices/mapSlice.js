@@ -7,11 +7,7 @@ export const mapSlice=createSlice({
   reducers:{
 
     drawHandler:(state)=>{
-      if(state.isLineAdded==false){
-        state.isLineAdded=true
-      }else{
-        state.isLineAdded=false;
-      }
+      state.isLineAdded=true
     }
   }
 })

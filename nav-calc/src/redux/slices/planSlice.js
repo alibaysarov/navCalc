@@ -1,4 +1,20 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice,createAsyncThunk } from "@reduxjs/toolkit";
+import { airData } from "../../aeroNavLogic";
+export const getMeWind=createAsyncThunk('plan/getMeWind',async(point)=>{
+  if(point==null){
+    return '---'
+  }
+  const [lng,lat]=point
+  const res=await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lng}&appid=3a815b785d67d3ea0361d8ba93fc7199&units=metric`);
+  if(!res.ok){
+      throw Error('Ошибка при рассчете ветра')
+  }else{
+      let json=await res.json()
+      let wind=await json.wind;
+      return {speed:wind.speed,deg:wind.deg}
+  }
+
+})
 export const planSlice=createSlice({
   name:'plan',
   initialState:{
@@ -46,8 +62,27 @@ export const planSlice=createSlice({
     },
     pointsList:(state,action)=>{
       // let wps=action.payload.join('=>');
-      state.waypoints=action.payload
+      state.waypoints=action.payload.map(el=>{
+        const {trueHeading,magnetHeading}=airData(el.leg)
+        // console.log(airData(el.leg));
+        return{
+          ...el,
+          trueHeading,
+          magnetHeading
+          
+        }
+      })
       console.log(state.waypoints);
+    }
+  },
+  extraReducers:{
+    [getMeWind.fulfilled]:(state,action)=>{
+      state.waypoints=state.waypoints.map(el=>{
+        return{
+          ...el,
+          ...action.payload
+        }
+      })
     }
   }
 })
