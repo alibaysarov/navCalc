@@ -88,7 +88,7 @@ transition: transform 0.3s ease-in-out;
   z-index: 12;
   display: grid;
   align-items: center;
-  grid-template-columns: 1fr 1fr 8fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr 8fr 1fr 1fr;
   grid-gap: 24px;
   grid-template-rows: 30px;
 }
@@ -131,6 +131,11 @@ transition: transform 0.3s ease-in-out;
     cursor: pointer;
   }
 }
+.filter{
+  cursor: pointer;
+  position: relative;
+}
+
 .question{
   grid-column: 6/7;
   svg{

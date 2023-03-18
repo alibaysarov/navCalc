@@ -32,15 +32,19 @@ import {toStringHDMS} from 'ol/coordinate.js';
 //redux
 import { useDispatch,useSelector } from "react-redux";
 import { showDistance,showTime,pointsList,getMeWind } from '../../redux/slices/planSlice.js';
-import {drawHandler} from '../../redux/slices/mapSlice.js';
+import {drawHandler,viewPortHandler} from '../../redux/slices/mapSlice.js';
 
 //new imports
-import { mapLayers,vector,source,modify,snap,draw } from "./utils/mapLayers.js";
+import { mapLayers,vector,source,modify,snap,draw, ctrStyle, ctaStyle } from "./utils/mapLayers.js";
 import mapLogic from "./utils/mapLogic.js";
+import { containsExtent, intersects } from 'ol/extent';
 const MapWrapper = ({children,paramsChangeHandler}) => {
   const dispatch=useDispatch()
-  const {isLineAdded}=useSelector((state)=>state.map)
+  const {isLineAdded,zones}=useSelector((state)=>state.map)
+  
   const {speed}=useSelector((state)=>state.plan)
+
+  const {zonesIsShown,airportsIsShown}=useSelector(state=>state.ui)
   const mapRef=React.useRef(null);
   const [map ,setMap]=React.useState(null);
   
@@ -62,46 +66,119 @@ const MapWrapper = ({children,paramsChangeHandler}) => {
   
   
   React.useEffect(()=>{
+    const [defaultLayer,ctrLayer,ctaLayer,airportsLayers]=mapLayers;
+    // ctrLayer.setStyle(ctrStyle)
+    
+    const getmeVC = () => {
+      const extent1 = defaultMap
+        .getView()
+        .calculateExtent(defaultMap.getSize());
+      const viewportCoord = transformExtent(extent1, 'EPSG:3857', 'EPSG:4326');
+      console.log(viewportCoord);
+      dispatch(viewPortHandler(viewportCoord))
+      const[lng1,lat1,lng2,lat2]=viewportCoord;
+      let urlPostFix=`?lng1=${lng1}&lat1=${lat1}&lng2=${lng2}&lat2=${lat2}`;
+      const url1='http://localhost:5000/api/airports'+urlPostFix
+      console.log(url1);
+      if(airportsIsShown===true){
+        airportsLayers.getSource().setUrl(url1);
+        airportsLayers.getSource().refresh();
+      }else{
+        airportsLayers.getSource().clear();
+        airportsLayers.getSource().refresh();
+      }
+    };
+    
+    
     const defaultMap=new Map({
       target:mapRef.current,
-      layers:mapLayers,
+      layers:[...mapLayers,vector],
       view:new View({
         center:fromLonLat([37,55]),
         zoom:7,
       }),
       controls:[]
     });
-    setMap(defaultMap);
-    defaultMap.addLayer(vector)
+    const toggleCtaFeatures=()=>{
+      if(zonesIsShown){
+          console.log(ctaLayer.getSource());
+          ctaLayer.getSource().setUrl('http://localhost:5000/api/zones')
+          ctaLayer.getSource().refresh()
+          console.log(transform(defaultMap.getView().getCenter(),'EPSG:3857','EPSG:4326'));
+      }else{
+        ctaLayer.getSource().clear();
+      }
+      console.log(zonesIsShown);
+    }
+    toggleCtaFeatures()
+    getmeVC()
     
+    
+    // defaultMap.addLayer(vector)
+    const renderInViewPortCTR=(feature)=>{
+      const extent=defaultMap.getView().calculateExtent(defaultMap.getSize())
+      const geom=feature.getGeometry().intersectsExtent(extent)
+      return geom? ctrStyle:undefined
+    }
+    
+     const renderInViewPortCTA=(feature)=>{
+      const getColor=feature.values_.class.toUpperCase()=='C'.toUpperCase()
+      ?'#6181B3'
+      :'#8BCD93'
+      
+      const style= new Style({
+        fill:new Fill({
+          color:'transparent'
+        }),
+        stroke:new Stroke({
+          width:2,
+          color:getColor
+        })
+      })
+      const cache=new Set([feature])
+      
+      const extent=defaultMap.getView().calculateExtent(defaultMap.getSize())
+      const geom=feature.getGeometry().intersectsExtent(extent)
+      return geom?style:undefined
+    }
+      // console.log(readFeatures(layerItems));
+      
+    const moveStarthandler=(e)=>{
+      ctaLayer.setStyle(renderInViewPortCTA)
+      ctrLayer.setStyle(renderInViewPortCTR)
+    }
+    
+    setMap(defaultMap);
+
     function finishDrawingHandler(){
       
       defaultMap.removeInteraction(draw);
-      draw.finishDrawing()
-      defaultMap.addInteraction(snap);
+      // defaultMap.addInteraction(draw)
+      draw.abortDrawing()
+      // defaultMap.addInteraction(snap);
     }
-
+    
     let projection=defaultMap.getView().getProjection();
-    
-    
-      defaultMap.on('contextmenu',function(evt){
-        defaultMap.addInteraction(modify);
-        console.log(isLineAdded);
+    const addInteractions=()=>{
+      
         defaultMap.addInteraction(draw);
         defaultMap.addInteraction(snap);
-        // if(draw.map_.coordinateToPixelTransform_.length>=4){
-        //   defaultMap.removeInteraction(draw);
-        // defaultMap.removeInteraction(snap);
-        // }
+    }
+    defaultMap.on('moveend',moveStarthandler);
+    defaultMap.on('moveend',getmeVC);
+      defaultMap.on('contextmenu',function(evt){
+        
+        
       })
     
     
     defaultMap.on('click',finishDrawingHandler);
       draw.on('drawend',(e)=>{
+        // defaultMap.addInteraction(draw);
         dispatch(drawHandler())
-        if(draw.map_.coordinateToPixelTransform_.length>=4){
-          draw.finishDrawing()
-        }
+        draw.abortDrawing()
+        // draw.finishDrawing()
+        
         
         let writer=new GeoJSON();
         let geojsonStr =JSON.parse( writer.writeFeatures([e.feature])); 
@@ -121,7 +198,6 @@ const MapWrapper = ({children,paramsChangeHandler}) => {
         const stringCoords=newWs.map((item,idx)=>{
           let time=(startDistance[idx]/speed)*60
           time= mapLogic.timeToString(time)
-          console.log(newWs);
           dispatch(getMeWind(newWs[idx+1]))
           return{
             leg:{
@@ -147,10 +223,6 @@ const MapWrapper = ({children,paramsChangeHandler}) => {
         
         const coordinates=mapLogic.uniteCoords(targetGeometry.at(-1))
           .map(item=>transform(item,projection,'EPSG:4326'));
-
-        
-          
-        
         let geom=new LineString(coordinates)
         const startDistance=[];
         geom.forEachSegment((start,end)=>{
@@ -169,16 +241,18 @@ const MapWrapper = ({children,paramsChangeHandler}) => {
           }
         
         })
+        console.log(stringCoords);
         dispatch(pointsList(stringCoords))
         const totalDistance=Math.round(getLength(geom,{projection:'EPSG:4326'})/1000)
         dispatch(showDistance({distance:totalDistance}))
         dispatch(showTime())
 
       })
-
+      addInteractions();
+      defaultMap.addInteraction(modify);
     return () => defaultMap.setTarget(undefined);
     
-  },[])
+  },[zones])
   
   
   return (

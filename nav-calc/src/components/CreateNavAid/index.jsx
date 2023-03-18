@@ -7,6 +7,9 @@ import cl from './index.module.scss'
 import { IMaskInput } from 'react-imask';
 import {SphericalUtil, PolyUtil} from "node-geometry-library";
 import Planner from '../Planner';
+import { useDispatch,useSelector } from 'react-redux';
+import { airSpaceOpenHandler } from '../../redux/slices/uislice';
+import AirSpaceFilter from '../AirSpaceFilter';
 
 
 const CreateNavAid = () => {
@@ -14,8 +17,9 @@ const CreateNavAid = () => {
   const inputHandler=(e)=>{
     setTextInputVal(e.target.value)
   }
+  const dispatch=useDispatch();
+  const {openAirSpaceSelector}=useSelector(state=>state.ui);
   
-
   const ref = React.useRef(null);
 const inputRef = React.useRef(null);
 
@@ -40,6 +44,7 @@ const [flightParams,setFlightParams]=useState({
 const paramsChangeHandler=(name)=>{
   console.log(name);
 }
+const openAirSpaceTabHandler=()=>dispatch(airSpaceOpenHandler())
 const [openFlightPlan,setOpenFlightPlan]=useState(false);
 
   return (
@@ -52,6 +57,10 @@ const [openFlightPlan,setOpenFlightPlan]=useState(false);
       <div className={cl.createPlan} onClick={()=>setOpenFlightPlan(prev=>!prev)}>
         <span>План полёта</span>
         <img src="img/menuIcons/file-dock_light.svg" width={20} height={20} alt="" />
+      </div>
+      <div className={cl.filter} >
+        <img onClick={openAirSpaceTabHandler} src="img/menuIcons/Filter-icon.svg" width={20} height={20} alt="" />
+        {openAirSpaceSelector&&<AirSpaceFilter/>}
       </div>
       <div className={cl.question}>
         <svg width="30" height="30" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">

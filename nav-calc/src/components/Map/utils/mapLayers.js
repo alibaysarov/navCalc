@@ -47,44 +47,47 @@ const defaultVectorLayer=new VectorLayer({
 const ctaLayer=new VectorLayer({
   source:new VectorSource({
     format:new GeoJSON(),
-    url:'http://localhost:5000/cta',
+    
   }),
-  style:function(feature){
-    function getColor(feature){
-      if(feature.values_.class.toUpperCase()=='C'.toUpperCase()){
-        return '#6181B3'
-      }else{
-        return '#8BCD93'
-      }
-    }
-    return new Style({
-      fill:new Fill({
-        color:'transparent'
-      }),
-      stroke:new Stroke({
-        width:4,
-        color:getColor(feature)
-      })
+  
+})
+const airportsLayers=new VectorLayer({
+  source:new VectorSource({
+    format:new GeoJSON(),
+    url:''
+  })
+})
+export const airportStyle=new Style({
+  image:new Circle({
+    radius:5,
+    fill:new Fill({
+      color:'blue'
+    }),
+    stroke:new Stroke({
+      width:1,
+      color:'#000'
     })
-  }
+  })
+})
+airportsLayers.setStyle(airportStyle)
+export const ctrStyle=new Style({
+  fill:new Fill({
+    color:'transparent'
+  }),
+  stroke:new Stroke({
+    width:3,
+    color:'#A6D8A9'
+  })
 })
 const ctrLayer=new VectorLayer({
   source:new VectorSource({
     format:new GeoJSON(),
-    url:'http://localhost:5000/ctr'
+    
   }),
-  style:new Style({
-    fill:new Fill({
-      color:'transparent'
-    }),
-    stroke:new Stroke({
-      width:4,
-      color:'#A6D8A9'
-    })
-  })
+  
 })
 
-export const mapLayers=[defaultLayer,ctrLayer,ctaLayer];
+export const mapLayers=[defaultLayer,ctrLayer,ctaLayer,airportsLayers];
 
 export const source=new VectorSource({wrapX:false})
 export const vector=new VectorLayer({

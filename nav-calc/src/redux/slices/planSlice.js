@@ -63,8 +63,8 @@ export const planSlice=createSlice({
     pointsList:(state,action)=>{
       // let wps=action.payload.join('=>');
       state.waypoints=action.payload.map(el=>{
+        
         const {trueHeading,magnetHeading}=airData(el.leg)
-        // console.log(airData(el.leg));
         return{
           ...el,
           trueHeading,
