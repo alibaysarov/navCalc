@@ -50,6 +50,7 @@ import {
   ctrStyle,
   ctaStyle,
   airportStyle,
+  layersUrl,
 } from "./utils/mapLayers.js";
 import mapLogic from "./utils/mapLogic.js";
 import { containsExtent, intersects } from "ol/extent";
@@ -95,7 +96,7 @@ const MapWrapper = ({ children, paramsChangeHandler }) => {
         const [lng1, lat1, lng2, lat2] = viewportCoord;
         console.log(lng1, lat1, lng2, lat2);
 
-        const url = new URL("http://localhost:5000/api/airports");
+        const url = new URL(`${layersUrl}/api/airports`);
         url.searchParams.set("lng1", lng1);
         url.searchParams.set("lat1", lat1);
         url.searchParams.set("lng2", lng2);
@@ -123,7 +124,7 @@ const MapWrapper = ({ children, paramsChangeHandler }) => {
     const toggleCtaFeatures = () => {
       if (zonesIsShown) {
         console.log(ctaLayer.getSource());
-        ctaLayer.getSource().setUrl("http://localhost:5000/api/zones");
+        ctaLayer.getSource().setUrl(`${layersUrl}/api/zones`);
         ctaLayer.getSource().refresh();
         // console.log(transform(defaultMap.getView().getCenter(),'EPSG:3857','EPSG:4326'));
       } else {
