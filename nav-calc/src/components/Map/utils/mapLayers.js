@@ -54,7 +54,7 @@ const ctaLayer=new VectorLayer({
 const airportsLayers=new VectorLayer({
   source:new VectorSource({
     format:new GeoJSON(),
-    url:''
+    
   })
 })
 export const airportStyle=new Style({

@@ -20,6 +20,7 @@ import Home from './pages/Home';
 import DevelopPage from './pages/DevelopPage';
 import NewFlightPlanPage from './pages/NewFlightPlanPage';
 import MyRoutes from './pages/MyRoutes';
+import MapPage from './pages/MapPage';
 function App() {
  
   return (
@@ -33,6 +34,7 @@ function App() {
     <Route path='/messages' exact element={<DevelopPage/>}/>
     <Route path='/settings' exact element={<DevelopPage/>}/>
     <Route path='/profile' exact element={<DevelopPage/>}/>
+    <Route path='/map' exact element={<MapPage/>}/>
     
    </Routes>
    

@@ -35,7 +35,6 @@ export const planSlice=createSlice({
       state[action.payload.name]=''
     },
     showTime:(state)=>{
-      
       if(state.distance && state.speed){
         if(state.speed=='NaN'){
           state.time='---'
@@ -63,12 +62,12 @@ export const planSlice=createSlice({
     pointsList:(state,action)=>{
       // let wps=action.payload.join('=>');
       state.waypoints=action.payload.map(el=>{
-        
-        const {trueHeading,magnetHeading}=airData(el.leg)
+        // console.log('leg is :',el);
+        // const {trueHeading,magnetHeading}=airData(el.leg)
         return{
           ...el,
-          trueHeading,
-          magnetHeading
+          // trueHeading,
+          // magnetHeading
           
         }
       })

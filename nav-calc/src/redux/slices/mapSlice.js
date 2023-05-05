@@ -17,7 +17,8 @@ const url='http://localhost:5000/api/airports'+`?lng1=${lng1}&lat1=${lat1}&lng2=
 const res=await fetch(url)
   if(res.ok){
     const json=await res.json();
-    return json
+    console.log(json);
+    return json.data
   }
 });
 export const mapSlice=createSlice({

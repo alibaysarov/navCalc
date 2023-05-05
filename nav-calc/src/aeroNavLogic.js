@@ -73,10 +73,8 @@ export const airData=(leg)=>{
         lng:end[0]
     }
     trueHeading=SphericalUtil.computeHeading(pointA,pointB);
-    // >0?trueHeading:360-trueHeading
     trueHeading=trueHeading>0?trueHeading:360-trueHeading;
     const magneticVariation=geomagnetism.model().point([pointB.lat,pointB.lng]).decl;
-    // console.log(magneticVariation);
     const magnetHeading=trueHeading-magneticVariation;
     
     return {trueHeading,magnetHeading};

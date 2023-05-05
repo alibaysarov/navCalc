@@ -8,7 +8,7 @@ import { IMaskInput } from 'react-imask';
 import {SphericalUtil, PolyUtil} from "node-geometry-library";
 import Planner from '../Planner';
 import { useDispatch,useSelector } from 'react-redux';
-import { airSpaceOpenHandler } from '../../redux/slices/uislice';
+import { airSpaceOpenHandler, flightPlanOpenHandler } from '../../redux/slices/uislice';
 import AirSpaceFilter from '../AirSpaceFilter';
 
 
@@ -18,7 +18,7 @@ const CreateNavAid = () => {
     setTextInputVal(e.target.value)
   }
   const dispatch=useDispatch();
-  const {openAirSpaceSelector}=useSelector(state=>state.ui);
+  const {openAirSpaceSelector,openFlightPlanSelector}=useSelector(state=>state.ui);
   
   const ref = React.useRef(null);
 const inputRef = React.useRef(null);
@@ -54,7 +54,7 @@ const [openFlightPlan,setOpenFlightPlan]=useState(false);
         <input type="text" />
         <img src="img/menuIcons/Search.svg" alt="Поиск" width={15} height={15}/>
       </div>
-      <div className={cl.createPlan} onClick={()=>setOpenFlightPlan(prev=>!prev)}>
+      <div className={cl.createPlan} onClick={()=>dispatch(flightPlanOpenHandler())}>
         <span>План полёта</span>
         <img src="img/menuIcons/file-dock_light.svg" width={20} height={20} alt="" />
       </div>
@@ -69,7 +69,7 @@ const [openFlightPlan,setOpenFlightPlan]=useState(false);
         </svg>
       </div>
     </div>
-      {openFlightPlan&&<Planner/>}
+      {openFlightPlanSelector&&<Planner/>}
 
       <Container styles={{marginTop:70+'px',marginBottom:70+'px'}}>
         <MapWrapper/>

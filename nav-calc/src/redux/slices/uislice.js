@@ -7,10 +7,14 @@ const uiSlice=createSlice({
     name:"ui",
     initialState:{
         openAirSpaceSelector:false,
+        openFlightPlanSelector:false,
         zonesIsShown:false,
         airportsIsShown:false
     },
     reducers:{
+        flightPlanOpenHandler:(state)=>{
+            state.openFlightPlanSelector=!state.openFlightPlanSelector;
+        },
         airSpaceOpenHandler:(state,action)=>{
             state.openAirSpaceSelector=!state.openAirSpaceSelector;
         },
@@ -25,5 +29,5 @@ const uiSlice=createSlice({
     },
     
 })
-export const {airSpaceOpenHandler,ctaCtrHandler,airportsHandler}=uiSlice.actions
+export const {airSpaceOpenHandler,flightPlanOpenHandler,ctaCtrHandler,airportsHandler}=uiSlice.actions
 export default uiSlice.reducer
