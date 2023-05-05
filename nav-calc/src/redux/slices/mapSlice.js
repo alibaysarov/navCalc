@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { useDispatch } from "react-redux";
 
 export const getMeZones = createAsyncThunk("ui/getMeZones", async () => {
-  const res = await fetch(`${layersUrl}api/zones`);
+  const res = await fetch(`${layersUrl}/api/zones`);
   if (res.ok) {
     const json = await res.json();
     return json.data;
@@ -15,7 +15,7 @@ export const getMeAirports = createAsyncThunk(
   async (_, { getState }) => {
     const { viewPortConstr } = getState().map;
     const [lng1, lat1, lng2, lat2] = viewPortConstr;
-    const url = `${layersUrl}api/airports?lng1=${lng1}&lat1=${lat1}&lng2=${lng2}&lat2=${lat2}`;
+    const url = `${layersUrl}/api/airports?lng1=${lng1}&lat1=${lat1}&lng2=${lng2}&lat2=${lat2}`;
     const res = await fetch(url);
     if (res.ok) {
       const json = await res.json();
