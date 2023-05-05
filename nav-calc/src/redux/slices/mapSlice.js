@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { useDispatch } from "react-redux";
+import { layersUrl } from "../../components/Map/utils/mapLayers";
 
 export const getMeZones = createAsyncThunk("ui/getMeZones", async () => {
   const res = await fetch(`${layersUrl}/api/zones`);
